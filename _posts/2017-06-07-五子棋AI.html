@@ -1,0 +1,288 @@
+---
+layout: post
+title: 五子棋AI（上）——界面篇
+date: 2017-06-07
+categories: AI
+tags: [五子棋AI]
+---
+<h3>
+	一 知识点概览<br/>
+</h3>
+<p>
+	今年阿尔法狗特别火，阿尔法的智能高度够不着，写个初级版的五子棋“阿尔法狗”来玩玩。界面篇需要用的知识点如下，如无基础自行补齐再来<br/>
+</p>
+<ol class=" list-paddingleft-2" style="list-style-type: decimal;">
+	<li>
+		<p>
+			canvas基础（重点）：绘制直线，绘制圆，绘制阴影和渐变，绘制样式设置，绘制图片
+		</p>
+	</li>
+	<li>
+		<p>
+			js基础：onclick,onload
+		</p>
+	</li>
+	<li>
+		<p>
+			html基础
+		</p>
+		<p>
+			<br/>
+		</p>
+	</li>
+</ol>
+<p>
+	<br/>
+</p>
+<p>
+	先看一眼需要实现的界面效果：
+</p>
+<p>
+	<img src="https://www.luojia.ren/wp-content/uploads/2017/06/55841496904537.png"/>
+</p>
+<h3>
+	二 代码实现
+</h3>
+<h4>
+	2.1搭建html结构
+</h4>
+<p>
+	非常简单，一个基本的html结构加一个canvas标签就好了，棋盘和棋子都由canvas绘制。<br/>
+</p>
+<pre class="brush:html;toolbar:false">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+   &lt;meta charset=&quot;utf-8&quot; /&gt;
+   &lt;title&gt;瓦力&lt;/title&gt;
+   &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./css/smart.css&quot;/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;canvas id=&quot;chess&quot; width=&quot;450px&quot; height=&quot;450px&quot;&gt;&lt;/canvas&gt;
+&lt;script src=&quot;js/smart.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+<h4>
+	2.2 绘制棋盘
+</h4>
+<p>
+	涉及canvas直线绘制，图片绘制。不懂看canvas基础，不多讲。<br/>
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>(function () {
+   var chess = document.getElementById(&#39;chess&#39;),//获取画布
+      ctx = chess.getContext(&#39;2d&#39;);//设置画布渲染
+
+   function drawChessBoard(){
+      for(var i = 0; i &lt; 15; i++) {
+         //横
+         ctx.beginPath();
+         ctx.moveTo(15, 15 + i * 30);
+         ctx.lineTo(435, 15 + i * 30);
+         ctx.stroke();
+         //竖
+         ctx.beginPath();
+         ctx.moveTo(15 + i * 30, 15);
+         ctx.lineTo(15 + i * 30, 435);
+         ctx.stroke();
+      }
+   }
+
+   //绘制背景
+   var bg = new Image();
+   bg.src = &quot;img/timg.jpg&quot;;
+   bg.onload = function () {
+      ctx.drawImage(bg, 0 ,0, 450, 450);
+      drawChessBoard();
+   }
+}());</code></pre></div>
+<h4>
+	2.3 绘制棋子
+</h4>
+<p>
+	封装一个绘制棋子的函数，参数为横纵坐标以及需要绘制棋子的颜色。canvas知识涉及到圆的绘制，渐变的绘制，阴影的绘制。<br/>
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>function oneStep(i, j, black){
+   //阴影，让棋子看起来更加逼真（可以去掉查看对比效果）
+   ctx.shadowOffsetX = 1.5;
+   ctx.shadowOffsetY = 2;
+   ctx.shadowBlur = 3;
+   ctx.shadowColor = &#39;#333&#39;;
+   //圆
+   ctx.beginPath();
+   ctx.arc(15 + i * 30, 15 + j * 30, 13, 0, 2 * Math.PI);
+   ctx.closePath();
+   //径向渐变
+   var gradient = ctx.createRadialGradient(
+      15 + i * 30 + 2,
+      15 + j * 30 - 2,
+      13,
+      15 + i * 30 + 2,
+      15 + j * 30 - 2,
+      0);
+   if(black){
+      gradient.addColorStop(0, &#39;#0a0a0a&#39;);
+      gradient.addColorStop(1, &#39;#636766&#39;);
+   }else{
+      gradient.addColorStop(0, &#39;#d1d1d1&#39;);
+      gradient.addColorStop(1, &#39;#f9f9f9&#39;);
+   }
+   ctx.fillStyle = gradient;
+   ctx.fill();
+}</code></pre></div>
+<h4>
+	2.4 实现点击落子
+</h4>
+<p>
+	点击落子事件关键点：<br/>
+</p>
+<ol class=" list-paddingleft-2" style="list-style-type: decimal;">
+	<li>
+		<p>
+			获取鼠标点击的坐标
+		</p>
+	</li>
+	<li>
+		<p>
+			判断点击的坐标位置是否已经有棋子
+		</p>
+	</li>
+	<li>
+		<p>
+			调用oneStep()落子<br/>
+		</p>
+	</li>
+</ol>
+<div class="highlighter-rouge"><pre class="highlight"><code>//初始化棋盘落子计数 count 用来计算棋盘上那些点位有落子
+for (var i = 0; i &lt; 15; i++) {
+   count[i] = [];
+   for (var j = 0; j &lt; 15; j++) {
+      count[i][j] = 0;
+   }
+}
+
+//落子事件绑定
+chess.onclick = function (e) {
+   //获取鼠标点击位置坐标，并转换为落点坐标
+   var x = e.offsetX,
+      y = e.offsetY;
+   console.log(&#39;(&#39; + x + &#39;,&#39; + y + &#39;)&#39;);
+   x = Math.floor(x / 30);
+   y = Math.floor(y / 30);
+   console.log(&#39;(&#39; + x + &#39;,&#39; + y + &#39;)&#39;);
+
+   //判断当前落点是否已有棋子，如果没有则落子成功
+   if (count[x][y] === 0) {
+      oneStep(x, y, me);
+      count[x][y] = 1;
+      me = !me;
+   }
+};</code></pre></div>
+<h4>
+	2.5 用对象封装游戏
+</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code>(function () {
+   var WallE = {
+      me: true,//棋手标记 true为玩家下棋，false为电脑下棋
+      count: (function () {
+         //初始化棋盘落子计数 count 用来计算棋盘上那些点位有落子
+         var count = [];
+         for (var i = 0; i &lt; 15; i++) {
+            count[i] = [];
+            for (var j = 0; j &lt; 15; j++) {
+               count[i][j] = 0;
+            }
+         }
+         return count;
+      }()),
+      drawChessBoard: function () {
+         for (var i = 0; i &lt; 15; i++) {
+            //横
+            this.ctx.beginPath();
+            this.ctx.moveTo(15, 15 + i * 30);
+            this.ctx.lineTo(435, 15 + i * 30);
+            this.ctx.stroke();
+            //竖
+            this.ctx.beginPath();
+            this.ctx.moveTo(15 + i * 30, 15);
+            this.ctx.lineTo(15 + i * 30, 435);
+            this.ctx.stroke();
+         }
+      },
+      oneStep: function (i, j, black) {
+         //阴影，让棋子看起来更加逼真（可以去掉查看对比效果）
+         this.ctx.shadowOffsetX = 1.5;
+         this.ctx.shadowOffsetY = 2;
+         this.ctx.shadowBlur = 3;
+         this.ctx.shadowColor = &#39;#333&#39;;
+         //圆
+         this.ctx.beginPath();
+         this.ctx.arc(15 + i * 30, 15 + j * 30, 13, 0, 2 * Math.PI);
+         this.ctx.closePath();
+         //径向渐变
+         var gradient = this.ctx.createRadialGradient(
+            15 + i * 30 + 2,
+            15 + j * 30 - 2,
+            13,
+            15 + i * 30 + 2,
+            15 + j * 30 - 2,
+            0);
+         //判断绘制什么颜色的棋子
+         if (black) {
+            gradient.addColorStop(0, &#39;#0a0a0a&#39;);
+            gradient.addColorStop(1, &#39;#636766&#39;);
+         } else {
+            gradient.addColorStop(0, &#39;#d1d1d1&#39;);
+            gradient.addColorStop(1, &#39;#f9f9f9&#39;);
+         }
+         this.ctx.fillStyle = gradient;
+         this.ctx.fill();
+      },
+      init: function (selectorId) {
+         this.chess = document.getElementById(selectorId);//获取画布
+         this.ctx = this.chess.getContext(&#39;2d&#39;);//设置画布渲染
+
+         var _this = this;
+         //绘制背景
+         var bg = new Image();
+         bg.src = &quot;img/timg.jpg&quot;;
+         bg.onload = function () {
+            _this.ctx.drawImage(bg, 0, 0, 450, 450);
+            _this.drawChessBoard();
+         }
+
+         //落子事件绑定
+         _this.chess.onclick = function (e) {
+            //获取鼠标点击位置坐标，并转换为落点坐标
+            var x = e.offsetX,
+               y = e.offsetY;
+
+            x = Math.floor(x / 30);
+            y = Math.floor(y / 30);
+
+            //判断当前落点是否已有棋子，如果没有则落子成功
+            if (_this.count[x][y] === 0) {
+               _this.oneStep(x, y, _this.me);
+               _this.count[x][y] = 1;
+               _this.me = !_this.me;
+            }
+         };
+      }
+   }
+
+   //启动瓦力
+   var robot = Object.create(WallE);
+   robot.init(&#39;chess&#39;);
+}());</code></pre></div>
+<h3>
+	三 完整源码
+</h3>
+<p>
+	<a href="https://github.com/summer1914/Wall-E/tree/master/UI">https://github.com/summer1914/Wall-E/tree/master/UI</a>
+</p>
+<p>
+	<br/>
+</p>
+<blockquote>
+	<p>
+		欢迎讨论，欢迎留言。若喜欢可送颗star<img src="http://img.baidu.com/hi/jx2/j_0003.gif" style="white-space: normal;"/>
+	</p>
+</blockquote>

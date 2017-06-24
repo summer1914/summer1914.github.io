@@ -16,8 +16,10 @@ tags: [jQuery]
 <p>
 	方法jQuery.extend()和 jQuery.fn.extend()都是用于合并两个或者多个对象属性到第一个对象。使用语法如下：
 </p>
-<div class="highlighter-rouge"><pre class="highlight"><code>jQuery.extend([deep], target, object1[,objectN])
-	jQuery.fn,extend([deep], target, object1[,objectN])</code></pre></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>
+	jQuery.extend([deep], target, object1[,objectN])
+	jQuery.fn,extend([deep], target, object1[,objectN])
+</code></pre></div>
 	<p>
 		参数deep是可选的布尔值，表示是否进行深度合并（递归合并）。合并默认是不递归的，也就是说如果第一个参数的属性为对对象或者数组，她会被后面的对象的同名属性完全覆盖。如果为true，则表示进行深度合并，合并过程是递归的。
 	</p>
