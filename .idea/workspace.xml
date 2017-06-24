@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9c50a1d1-7353-4180-b718-a9dd41a68b8d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/images/bio-photo.jpg" afterPath="$PROJECT_DIR$/images/bio-photo.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_config.yml" afterPath="$PROJECT_DIR$/_config.yml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.html" afterPath="$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_data/navigation.yml" afterPath="$PROJECT_DIR$/_data/navigation.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_pages/about.md" afterPath="$PROJECT_DIR$/_pages/about.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -64,31 +63,18 @@
         <entry file="file://$PROJECT_DIR$/_data/navigation.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
-              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="1" selection-end-line="18" selection-end-column="16" />
+              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="18" selection-end-column="15" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="2017-06-24-javascript的闭包和变量作用域链.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.html">
+      <file leaf-file-name="2017-06-24-javascript的闭包和变量作用域链.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="3" lean-forward="true" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
-              <folding>
-                <element signature="e#487#492#0" expanded="true" />
-                <element signature="e#498#503#0" expanded="true" />
-                <element signature="e#540#545#0" expanded="true" />
-                <element signature="e#549#554#0" expanded="true" />
-                <element signature="e#781#786#0" expanded="true" />
-                <element signature="e#792#797#0" expanded="true" />
-                <element signature="e#834#839#0" expanded="true" />
-                <element signature="e#843#848#0" expanded="true" />
-                <element signature="e#1108#1113#0" expanded="true" />
-                <element signature="e#1119#1124#0" expanded="true" />
-                <element signature="e#1484#1489#0" expanded="true" />
-                <element signature="e#1495#1500#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-501">
+              <caret line="17" column="5" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -103,12 +89,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="about.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="about.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_pages/about.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="105">
-                <caret line="7" column="40" lean-forward="false" selection-start-line="7" selection-start-column="40" selection-end-line="7" selection-end-column="40" />
+              <first_editor relative-caret-position="120">
+                <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -178,10 +164,11 @@
         <option value="$PROJECT_DIR$/_posts/js/2017-06-24-javascript的闭包和变量作用域链.html" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/_pages/portfolio.md" />
-        <option value="$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.html" />
         <option value="$PROJECT_DIR$/_config.yml" />
-        <option value="$PROJECT_DIR$/_data/navigation.yml" />
         <option value="$PROJECT_DIR$/_pages/about.md" />
+        <option value="$PROJECT_DIR$/_data/navigation.yml" />
+        <option value="$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.html" />
+        <option value="$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.md" />
       </list>
     </option>
   </component>
@@ -319,7 +306,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5615000" />
+    <option name="totallyTimeSpent" value="6369000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="832" extended-state="6" />
@@ -561,27 +548,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="3" lean-forward="true" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
-          <folding>
-            <element signature="e#487#492#0" expanded="true" />
-            <element signature="e#498#503#0" expanded="true" />
-            <element signature="e#540#545#0" expanded="true" />
-            <element signature="e#549#554#0" expanded="true" />
-            <element signature="e#781#786#0" expanded="true" />
-            <element signature="e#792#797#0" expanded="true" />
-            <element signature="e#834#839#0" expanded="true" />
-            <element signature="e#843#848#0" expanded="true" />
-            <element signature="e#1108#1113#0" expanded="true" />
-            <element signature="e#1119#1124#0" expanded="true" />
-            <element signature="e#1484#1489#0" expanded="true" />
-            <element signature="e#1495#1500#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_config.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="309">
@@ -598,22 +564,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/_pages/about.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="120">
+            <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/_data/navigation.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="1" selection-end-line="18" selection-end-column="16" />
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="18" selection-end-column="15" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pages/about.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="105">
-            <caret line="7" column="40" lean-forward="false" selection-start-line="7" selection-start-column="40" selection-end-line="7" selection-end-column="40" />
-            <folding />
-          </first_editor>
-          <second_editor />
+    <entry file="file://$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-501">
+          <caret line="17" column="5" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -15,5 +15,5 @@ main:
 #  - title: "留言板"
 #    url: /guestbook
 
-#  - title: "关于我"
-#    url: /about
+  - title: "关于我"
+    url: /about
