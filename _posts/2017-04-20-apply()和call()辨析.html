@@ -1,0 +1,129 @@
+---
+layout: post
+title: javascript两个易混函数方法：apply()和call()辨析
+date: 2017-04-20
+categories: javascript
+tags: [jQuery]
+---
+
+<p>
+	在javascript中函数是一种特殊的对象，所以函数也可以有自己的属性和方法，apply()和call()便是javascript函数对象的两个方法。之前一直对这两个方法的使用迷迷糊糊，今天来认真研究总结一下。这两个方法的作用是为了改变某个函数或者方法运行时候的上下文，也就是为了改变函数体内部的this指向。
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>function pig(){}
+pig.prototype={
+    food:&#39;rice&#39;,
+    say:function(){
+        alert(&#39;My favorite food is&#39; + this.food);
+    }
+}
+
+var pig1 = new pig();
+pig1.say();  //My favorite food is rice
+
+//这时有一个dog对象，我们不想重新对他定义say()方法
+//那么我们可以通过call()或者apply()方法来让dog对象用上pig对象的say()方法
+var dog = {food: &#39;bone&#39;};
+pig.say.call(dog);  //My favorite food is bone
+pig.say.apply(dog);     //My favorite food is bone,与上一种方法等价</code></pre></div>
+<p>
+	<br/>
+</p>
+<p>
+	通过以上例子我们能大概知道这两个方法的作用，但还有很多疑点，比如他们之前的异同，如何传参数等。接下来我们一一探讨。
+</p>
+<p>
+	在js的严格模式中，call()和apply()的第一个实参都会变为this的值，哪怕传入的实参的原始值是null或undefined。在js的非严格模式中，传入的null和undefined都会被全局对象代替，而其他的原始值则会被相应的包装对象所代替。<span style="color: rgb(192, 0, 0);">这两个方法的相同点是他们的作用一样，都是为了改变方法或者函数的上下文；不同点是他们之前的传参方式。</span>
+</p>
+<p>
+	<br/>
+</p>
+<p>
+	对于call()来说，第一个调用上下文的实参之后的所有实参就是要传入待调用函数的实参值。而apply()其实与call()类似，但传入的实参的形式和call()有所不同，它的实参都被放在一个数组当中。
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>function pig(){}
+pig.prototype={
+    food:&#39;rice&#39;,
+    say:function(name){
+        alert(&#39;I am&#39; + name + &#39;. My favorite food is&#39; + this.food);
+    }
+}
+
+var pig1 = new pig();
+pig1.say(&#39;Piggy&#39;);  //I am Piggy. My favorite food is rice
+
+var dog = {food: &#39;bone&#39;};
+pig.say.call(dog, &#39;Bruce&#39;);  ///I am Bruce. My favorite food is bone
+pig.say.apply(dog, [&#39;Bruce&#39;]);     //I am Bruce. My favorite food is bone,与上一种方法等价</code></pre></div>
+<p>
+	<br/>
+</p>
+<p>
+	上面的例子还是无法说明这两个方法在使用情景上的真正区别，所以继续往下探讨。对于apply()来说，如果一个函数的实参可以是任意数量，那么给apply()传入的参数数组可以是任意长度的。传入apply()的参数数组可以是类数组也可以是真实的数组。实际上，我们会经常在不明确参数是什么的时候将当前函数的arguments数组直接传入apply()来调用另一个函数。这个时候我们应该心里有一点底了——在参数无法明确的时候或者参数非常多的时候我们用apply()更加合适
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>//调用Math.max()方法求最大值
+var nums = [11, 232, 4354, 6576, 767687, 2132, 980, 3232, 3232, 32, 3333];
+var max = Math.max.apply(Math, nums);</code></pre></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>//写插件无法确定用户传进来的参数的时候
+(function( $ ){
+
+  var methods = {
+    init : function( options ) {
+        // ...
+    },
+    show : function( ) {
+        //...
+    },
+    hide : function( ) {
+        //...
+    },
+    update : function( content ) {
+        //...
+    }
+  };
+
+  $.fn.tooltip = function( method ) {
+    // Method calling
+    if ( methods[method] ) {
+      return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+    } else if ( typeof method === &#39;object&#39; || ! method ) {
+      return methods.init.apply( this, arguments );
+    } else {
+      $.error( &#39;Method &#39; +  method + &#39; does not exist on jQuery.tooltip&#39; );
+    }
+  };
+
+})( jQuery );</code></pre></div>
+<p>
+	<br/>
+</p>
+<p>
+	关于arguments对象：在js函数中，使用特殊对象arguments，开发者无需明确指出参数名就可以访问参数。
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>function sayHi(){
+    if(arguments[0] == &#39;bye&#39;) return;
+    alert(arguments[0]);
+}
+sayHi(&#39;summer&#39;); //alert(&#39;summer&#39;);</code></pre></div>
+<p>
+	<span style="color: rgb(192, 0, 0);"><br/></span>
+</p>
+<p>
+	<span style="color: rgb(192, 0, 0);">总结：</span>
+</p>
+<p>
+	<span style="color: rgb(192, 0, 0);">call(), apply()方法都是为了动态改变方法的上下文。他们的区别是,从第二个参数起, call方法参数将依次传递给借用的方法作参数,&nbsp;</span>
+</p>
+<p>
+	<span style="color: rgb(192, 0, 0);">而apply直接将这些参数放到一个数组中再传递, 最后借用方法的参数列表是一样的.</span>
+</p>
+<p>
+	<span style="color: rgb(192, 0, 0);">在应用场景上，若参数明确可以用call()和apply()，参数不明确可以用apply()结合arguments.</span>
+</p>
+<p>
+	<span style="color: rgb(192, 0, 0);"><br/></span>
+</p>
+<blockquote>
+	<p>
+		<span style="color: rgb(0, 0, 0);">有质疑欢迎讨论，有错误诚望指正。</span>
+	</p>
+</blockquote>
