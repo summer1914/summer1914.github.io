@@ -1,0 +1,221 @@
+---
+layout: post
+title: jQuery深究（一）：构造jQuery对象
+date: 2017-05-01
+categories: javascript
+tags: [jQuery]
+---
+
+<p>
+	jquery对象是一个类数组对象，含有连续的整型属性，length属性和大量的jQuery方法。jQuery对象由构造函数jQuery()创建，$()是jQuery()的缩写。<br/>
+</p>
+<p>
+	<strong>关于类数组对象：</strong>
+</p>
+<p>
+	把拥有一个非负数且为整数数值的length属性的对象叫做类数组对象。
+</p>
+<p>
+	如：
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>var a = {&quot;0&quot;: &quot;a&quot;, &quot;1&quot;: &quot;b&quot;, &quot;2&quot;: &quot;c&quot;, length: 3}; //类数组对象
+//类数组对象没有直接继承Array.prototype不能直接调用数组方法，但是可以通过Function.call调用
+Array.prototype.join.call(a, &quot;+&quot;);   // =&gt; &quot;a+b+c&quot;
+Array.prototype.map.call(a, function(x){
+    return x.toUpperCase();
+});      // =&gt; [&quot;A&quot;,&quot;B&quot;,&quot;C&quot;]
+
+
+//判断是否是类数组对象
+function isArrayLike(o) {
+    if(o &amp;&amp;                      //o是非null，undefined等
+       typeof o === &quot;object&quot; &amp;&amp;    //o是对象
+       isFinite(o.length) &amp;&amp;       //o.length是有限数值
+       o.length &gt; 0 &amp;&amp;          //o.length 是非负数
+       o.length === Math.floor(o.length) &amp;&amp;  //o.length 是非整数
+       o.length &lt; 4294967296){       //o.length &lt; 2^32
+       return true;
+    } else {
+       return false;
+    }
+}
+var jqueryObj = $(&quot;body&quot;);
+console.log(isArrayLike(jqueryObj));     // =&gt; true</code></pre></div>
+<h3>
+	一 构造函数jQuery()
+</h3>
+<h4>
+	1.1 jQuery(selector [, context])：接受一个css选择器表达式和可选的选择器的上下文，返回一个包含了匹配的Dom元素的jQuery对象
+</h4>
+<p>
+	这种是我们平时最常用的使用方式，传入一个选择器表达式，jQuery遍历文档，查找与之匹配的dom元素，并创建一个包含这些元素引用的jQuery对象；如果没有元素与之匹配，则创建一个空的jQuery对象，其中不包含任何元素，length属性值为0。
+</p>
+<p>
+	默认情况下，对匹配的元素的查找从根元素document开始，查找范围是整个文档树，但是我们可以通过传入第二个参数context来限定查找范围。
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>$(&#39;div.foo&#39;).click(function() {   //第一个查找遍历整个文档树
+    $(&#39;span&#39;, this).addClass(&#39;bar&#39;);       //第二个查找遍历被点击的元素
+    //等价于：$(this).find(&#39;span&#39;).addClass(&#39;bar&#39;)
+});</code></pre></div>
+<p>
+	<br/>
+</p>
+<h4>
+	1.2 jQuery(html [, ownerDocument]),&nbsp;&nbsp;jQuery(html [, props])：用提供的html代码创建DOM元素
+</h4>
+<p>
+	我们如果传入的字符串看起来像一段html代码，jQuery会尝试将这段html代码创建新的dom元素，并创建一个包含这个dom元素引用的jQuery对象。
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>$(&#39;&lt;p id=&quot;test&quot;&gt;my test&lt;/p&gt;&#39;).appendTo(&#39;body&#39;); //复杂html，用innerHtml机制创建dom元素
+$(&#39;&lt;img src=&quot;test.jpg&quot; /&gt;&#39;).appendTo(&#39;body&#39;);  //单独标签，用浏览器的原生方法document.createElement()创建dom</code></pre></div>
+<p>
+	第二个参数ownerDocument用于指定创建新的dom元素的文档对象，如果不传入，则默认为当前对象。
+</p>
+<p>
+	如果传入的是单独标签，第二个参数可以传入新建标签的props，参数的props会被传给jQuery的.attr()方法，然后由.attr()负责把参数中的属性，事件设置到新创建的DOM元素上。
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>$(&#39;&lt;img src=&quot;test.jpg&quot; /&gt;&#39;, {
+    &quot;class&quot;: &quot;test&quot;,
+    alt: &quot;click me!&quot;,
+    click: function(){
+        $(this).toggleClass(&quot;test&quot;);
+    }
+}).appendTo(&#39;body&#39;);</code></pre></div>
+<h4>
+	1.3 jQuery(element),&nbsp;jQuery(elementArray)：封装Dom为jQuery对象<br/>
+</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code>$(&#39;p.test&#39;).click(function(){
+    $(this).slideUp();         //this为dom元素
+});</code></pre></div>
+<h4>
+	1.4 jQuery(object)：封装普通对象为jQuery对象
+</h4>
+<p>
+	这个功能可以方便地在普通javascript对象上实现自定义事件的绑定和触发。可以实现发布-订阅功能。<br/>
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>var foo = {foo:&#39;bar&#39;, hello:&#39;world&#39;};
+var $foo = $(foo);
+$foo.on(&#39;custom&#39;, function(){
+    console.log(&#39;custom event was called&#39;);
+});
+
+$foo.trigger(&#39;custom&#39;);  //=&gt; &#39;custom event was called&#39;</code></pre></div>
+<h4>
+	1.5 jQuery(callback)：绑定ready事件监听函数，当DOM结构加载完成时执行
+</h4>
+<p>
+	如果传入一个事件，则在document上绑定一个ready事件的监听函数，当dom结构加载完成时执行。ready事件要早于load事件。（ready事件不是浏览器的原生事件，是DOMContentLoaded事件，onreadystatechange()事件，函数doScrollCheck()的统称）
+</p>
+<h4>
+	1.6 jQuery(jQuery object)：接受一个jQuery对象，返回该jQuery对象的拷贝副本
+</h4>
+<p>
+	如果传入一个jQuery对象，则创建该jQuery对象的一个副本并返回，副本与传入的jQuery对象引用完全相同的DOM元素
+</p>
+<h4>
+	1.7 jQuery()：创建一个空的jQuery对象
+</h4>
+<p>
+	不传入任何参数，返回一个空的jQuery对象，属性length为0（1.4之前会返回一个含有document对象的jQuery对象）<br/>
+</p>
+<p>
+	这个功能可以用来复用jQuery对象。创建一个空的jQuery对象，在需要的时候手动修改其中的元素，再调用jQuery方法，避免重复创建jQuery对象
+</p>
+<p>
+	<br/>
+</p>
+<h3>
+	二 构造jQuery对象模块的源码结构
+</h3>
+<p>
+	构造jQuery对象的源码结构如下，行数与真实源码不一致，只是展示结构：
+</p>
+<p>
+	<img src="https://www.luojia.ren/wp-content/uploads/2017/05/46521493642709.jpeg" title="jQueryInit.jpeg"/>
+</p>
+<p>
+	简要分析：
+</p>
+<ul class=" list-paddingleft-2" style="list-style-type: disc;">
+	<li>
+		<p>
+			1~21是最外层的自调用匿名函数，当jQuery初始化的时候，这个自调用的匿名函数包含的所有的javascript代码都会被执行
+		</p>
+	</li>
+	<li>
+		<p>
+			第二行定义了一个变量jQuery，2～18自调用匿名函数返回jQuery构造函数并赋值给变量jQuery，最后在把这个jQuery变量暴露给全局作用域window，并定义了别名$
+		</p>
+	</li>
+	<li>
+		<p>
+			3~5又定义了一个变量jQuery，它的值是jQuery的构造函数，在17的位置将这个变量返回给外层的jQuery，因此两个jQuery变量是等价的，都指向jQuery的构造函数
+		</p>
+	</li>
+	<li>
+		<p>
+			7~11覆盖了构造函数jQuery()的原型对象。覆盖原型对象的constructor属性并让他指向jquery的构造函数，定义原型方法jQuery.fn.init()，他负责解析参数selector和context的类型并执行相应的查找。然后在12的位置用jQuery构造函数的原型覆盖了jQuery.fn.init()的原型对象（在调用jQuery的构造函数的时候，实际上返回的是jQuery.fn.init()的实例）此外这里面还定义了很多其他的原型的属性和方法。
+		</p>
+	</li>
+	<li>
+		<p>
+			13用jQuery.extend()和jQuery.fn.extend()合并两个或者多个对象的属性到第一个对象
+		</p>
+	</li>
+	<li>
+		<p>
+			14～16在jquery的构造函数上定义了许多的静态函数和方法，如noConflict()，isReady()等<br/>
+		</p>
+	</li>
+</ul>
+<p style="white-space: normal;">
+	疑点自问：<br/>
+</p>
+<ol class=" list-paddingleft-2" style="width: 851.1875px; white-space: normal;">
+	<li>
+		<p>
+			<strong>为什么要在构造函数jQuery()内部用运算符new创建并且返回另一个构造函数的实例？</strong>
+		</p>
+		<p>
+			通常来说我们会使用new+构造函数的方式来创建一个新的对象实例，如 new Date()返回一个date对象；但是如果构造函数有返回值，运算符new所创建的对象会被丢弃，返回值将作为new表达式的值。jQuery利用了这个特性，通过在构造函数内部用运算符new创建并返回另一个构造函数的实例，省去了构造函数jQuery()前面的运算符new，简化了我们创建jQuery对象的书写。
+		</p>
+	</li>
+	<li>
+		<p>
+			<strong>为什么设置jQuery.fn指向jQuery()原型对象jQuery.prototype?</strong>
+		</p>
+		<p>
+			查了下资料，没有什么很深奥的原因，fn写起来比prototype简单，就是为了方便拼写。
+		</p>
+	</li>
+	<li>
+		<p>
+			<strong>调用构造函数返回的jQuery对象实际上是构造函数jQuery.fn.init()的实例，为什么能在构造函数jQuery.fn.init()的实例上调用jQuery()的原型方法和属性？如，$(&#39;p&#39;).length</strong>
+		</p>
+		<p>
+			代码里面可以找大了答案，执行jQuery.fn.init.prototype = jQuery.fn时，用构造函数jQuery()的原型对象覆盖了jQuery.fn.init()的原型对象，所以jQuery.fn.init()的实例可以访问jQuery()的原型方法和属性<br/>
+		</p>
+	</li>
+	<li>
+		<p>
+			2~18为什么将代码包裹在一个自调用的匿名函数中，去掉自调用的匿名函数，直接定义成如下形式不是更容易理解？
+		</p>
+		<p>
+			<img src="https://www.luojia.ren/wp-content/uploads/2017/05/18671493642709.jpeg" title="jQueryInit2.jpeg"/>
+		</p>
+		<p>
+			这张图的代码功能和上一张jQuery的源码是没有差异的，代码少的时候看起来确实这样舒服一点，但是如果考虑到jQuery的源码上万，就要考虑这样写会增加构造jQuery模块和其他的jQuery模块的耦合性。红框所标的源码部分省略了很多其他的局部变量，而这些局部变量其实只在jQuery的构造模块使用，通过把这些局部变量包裹在一个自调用的匿名函数中，更符合高内聚低耦合的设计思想。
+		</p>
+	</li>
+	<li>
+		<p>
+			为什么要覆盖构造函数的jQuery()的原型对象jQuery.prototype?
+		</p>
+		<p>
+			在原型对象上jQuery.prototype上定义的属性和方法会被所有的jQuery对象继承，可以有效减少每个jQuery对象所需的内存。
+		</p>
+	</li>
+</ol>
+<p>
+	<br/>
+</p>
