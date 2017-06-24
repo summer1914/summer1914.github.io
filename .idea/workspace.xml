@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9c50a1d1-7353-4180-b718-a9dd41a68b8d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/_posts/2017-05-01-jQuery.extend and jQuery.fn.extend.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_pages/about.md" afterPath="$PROJECT_DIR$/_pages/about.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.md" afterPath="$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_posts/2017-05-01-jQuery.extend and jQuery.fn.extend.html" afterPath="$PROJECT_DIR$/_posts/2017-05-01-jQuery.extend and jQuery.fn.extend.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -96,27 +93,27 @@
       <file leaf-file-name="2017-05-01-jQuery.extend and jQuery.fn.extend.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_posts/2017-05-01-jQuery.extend and jQuery.fn.extend.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1845">
-              <caret line="125" column="28" lean-forward="false" selection-start-line="125" selection-start-column="20" selection-end-line="125" selection-end-column="28" />
+            <state relative-caret-position="-1082">
+              <caret line="19" column="74" lean-forward="false" selection-start-line="19" selection-start-column="74" selection-end-line="19" selection-end-column="74" />
               <folding>
                 <element signature="n#style#0;n#span#0;n#p#3;n#!!top" expanded="true" />
-                <element signature="e#1699#1705#0" expanded="true" />
-                <element signature="e#1712#1718#0" expanded="true" />
-                <element signature="e#2051#2057#0" expanded="true" />
-                <element signature="e#2063#2069#0" expanded="true" />
-                <element signature="e#2070#2075#0" expanded="true" />
-                <element signature="e#2075#2080#0" expanded="true" />
-                <element signature="e#2300#2304#0" expanded="true" />
-                <element signature="e#2749#2754#0" expanded="true" />
-                <element signature="e#2811#2816#0" expanded="true" />
-                <element signature="e#2816#2821#0" expanded="true" />
-                <element signature="e#2827#2832#0" expanded="true" />
-                <element signature="e#2832#2837#0" expanded="true" />
-                <element signature="e#3039#3044#0" expanded="true" />
-                <element signature="e#3044#3049#0" expanded="true" />
-                <element signature="e#3138#3143#0" expanded="true" />
-                <element signature="e#3143#3148#0" expanded="true" />
-                <element signature="e#3393#3398#0" expanded="true" />
+                <element signature="e#1753#1759#0" expanded="true" />
+                <element signature="e#1766#1772#0" expanded="true" />
+                <element signature="e#2105#2111#0" expanded="true" />
+                <element signature="e#2117#2123#0" expanded="true" />
+                <element signature="e#2124#2129#0" expanded="true" />
+                <element signature="e#2129#2134#0" expanded="true" />
+                <element signature="e#2354#2358#0" expanded="true" />
+                <element signature="e#2803#2808#0" expanded="true" />
+                <element signature="e#2865#2870#0" expanded="true" />
+                <element signature="e#2870#2875#0" expanded="true" />
+                <element signature="e#2881#2886#0" expanded="true" />
+                <element signature="e#2886#2891#0" expanded="true" />
+                <element signature="e#3093#3098#0" expanded="true" />
+                <element signature="e#3098#3103#0" expanded="true" />
+                <element signature="e#3192#3197#0" expanded="true" />
+                <element signature="e#3197#3202#0" expanded="true" />
+                <element signature="e#3447#3452#0" expanded="true" />
                 <element signature="n#style#0;n#ol#0;n#!!top" expanded="true" />
               </folding>
             </state>
@@ -332,7 +329,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7334000" />
+    <option name="totallyTimeSpent" value="7437000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="832" extended-state="6" />
@@ -654,27 +651,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/_posts/2017-05-01-jQuery.extend and jQuery.fn.extend.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1845">
-          <caret line="125" column="28" lean-forward="false" selection-start-line="125" selection-start-column="20" selection-end-line="125" selection-end-column="28" />
+        <state relative-caret-position="-1082">
+          <caret line="19" column="74" lean-forward="false" selection-start-line="19" selection-start-column="74" selection-end-line="19" selection-end-column="74" />
           <folding>
             <element signature="n#style#0;n#span#0;n#p#3;n#!!top" expanded="true" />
-            <element signature="e#1699#1705#0" expanded="true" />
-            <element signature="e#1712#1718#0" expanded="true" />
-            <element signature="e#2051#2057#0" expanded="true" />
-            <element signature="e#2063#2069#0" expanded="true" />
-            <element signature="e#2070#2075#0" expanded="true" />
-            <element signature="e#2075#2080#0" expanded="true" />
-            <element signature="e#2300#2304#0" expanded="true" />
-            <element signature="e#2749#2754#0" expanded="true" />
-            <element signature="e#2811#2816#0" expanded="true" />
-            <element signature="e#2816#2821#0" expanded="true" />
-            <element signature="e#2827#2832#0" expanded="true" />
-            <element signature="e#2832#2837#0" expanded="true" />
-            <element signature="e#3039#3044#0" expanded="true" />
-            <element signature="e#3044#3049#0" expanded="true" />
-            <element signature="e#3138#3143#0" expanded="true" />
-            <element signature="e#3143#3148#0" expanded="true" />
-            <element signature="e#3393#3398#0" expanded="true" />
+            <element signature="e#1753#1759#0" expanded="true" />
+            <element signature="e#1766#1772#0" expanded="true" />
+            <element signature="e#2105#2111#0" expanded="true" />
+            <element signature="e#2117#2123#0" expanded="true" />
+            <element signature="e#2124#2129#0" expanded="true" />
+            <element signature="e#2129#2134#0" expanded="true" />
+            <element signature="e#2354#2358#0" expanded="true" />
+            <element signature="e#2803#2808#0" expanded="true" />
+            <element signature="e#2865#2870#0" expanded="true" />
+            <element signature="e#2870#2875#0" expanded="true" />
+            <element signature="e#2881#2886#0" expanded="true" />
+            <element signature="e#2886#2891#0" expanded="true" />
+            <element signature="e#3093#3098#0" expanded="true" />
+            <element signature="e#3098#3103#0" expanded="true" />
+            <element signature="e#3192#3197#0" expanded="true" />
+            <element signature="e#3197#3202#0" expanded="true" />
+            <element signature="e#3447#3452#0" expanded="true" />
             <element signature="n#style#0;n#ol#0;n#!!top" expanded="true" />
           </folding>
         </state>
