@@ -1,0 +1,114 @@
+---
+layout: post
+title: 网站性能优化（一）前端性能优化总结
+date: 2017-02-11
+categories: 服务器
+tags: [性能]
+---
+
+<p>
+	从15年初作为web组长加入创业公司做web开发，算起来到今年也有两年了，很遗憾这两年没有加入侧重web大型网站开发的公司，至今还没和自己仰慕的web大牛一起工作过，很多东西都是自己跌跌撞撞慢慢摸索。两年纪念，近期想将自己这两年的经验好好分类总结一下。web性能优化主要分三大块：web前端优化，应用服务器性能优化，存储性能优化。这篇主要总结的是web前端性能优化。
+</p>
+<h2>
+	一 web前端性能优化
+</h2>
+<p>
+	前端性能优化是最基础最简单也是成本最小的优化。前端性能的优化可以分为浏览器端的优化，缓存优化，和反向代理优化。<br/>
+</p>
+<h3>
+	1.1 浏览器端的优化
+</h3>
+<p>
+	浏览器端的优化主要从以下几个方面入手：减少http请求；利用浏览器缓存；启用压缩；css和必要的js放在页面最上面，其他js放在页面最下面；控制cookie的大小和数量<br/>
+</p>
+<h4>
+	1.1.1 减少http请求数<br/>
+</h4>
+<p>
+	http协议有一个重要的特点：无连接（短连接），关于http协议可以看<a href="http://luojia.ren/index.php/archives/3792">这篇文章</a>。这个特性意味着每一个http请求都要建立通信链路进行数据传输，而服务器端每次都要新开一个进程去处理每个http请求（此处忽略开启了keep-alive的少量连接），这在高并发大流量网站中多余的http请求数会给服务器造成巨大的本不必要的压力。因此，减少http请求数可以缓解服务器压力加快页面访问速度。
+</p>
+<p>
+	减少http请求数主要从以下几个方面入手：合并css文件，js文件，合并图片。
+</p>
+<h4>
+	1.1.2 利用浏览器缓存
+</h4>
+<p>
+	我们的系统中有很多的静态文件是很少发生变化而每次都请求，如果我们能将这些文件缓存在浏览器端，这样对减轻服务器压力和加快网页访问速度都有帮助。浏览器中的<strong style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; font-variant-ligatures: normal; orphans: 2; white-space: normal; widows: 2;">&nbsp;</strong>Cache-Control: max-age=秒特性恰好可以满足我们的这个需求<strong style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; font-variant-ligatures: normal; orphans: 2; white-space: normal; widows: 2;">。</strong>
+</p>
+<blockquote>
+	<p>
+		<strong style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; orphans: 2; widows: 2;">关于&nbsp;Cache-Control: max-age=秒 和&nbsp;Expires</strong>
+	</p>
+	<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; font-variant-ligatures: normal; orphans: 2; white-space: normal; widows: 2; background-color: rgb(255, 255, 255); margin-top: 0px; padding: 0px; border: 0px; list-style-type: none; list-style-position: initial; word-wrap: normal; word-break: normal; line-height: 21px;">
+		<span style="color: rgb(0, 0, 0); word-wrap: normal; word-break: normal; line-height: 21px;">Expires&nbsp;= 时间，HTTP 1.0 版本，缓存的载止时间，允许客户端在这个时间之前不去检查（发请求）<br/></span><span style="color: rgb(0, 0, 0); word-wrap: normal; word-break: normal; line-height: 21px;">max-age = 秒，HTTP 1.1版本，资源在本地缓存多少秒。</span><span style="color: rgb(0, 0, 0); word-wrap: normal; word-break: normal; line-height: 21px;"><br/></span><span style="word-wrap: normal; word-break: normal; line-height: 21px;"><span style="color: rgb(255, 0, 0);">如果max-age和<span style="word-wrap: normal; word-break: normal; line-height: 21px;">Expires</span>同时存在，则被Cache-Control的max-age覆盖。</span></span>
+	</p>
+	<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; font-variant-ligatures: normal; orphans: 2; white-space: normal; widows: 2; background-color: rgb(255, 255, 255); margin-top: 0px; padding: 0px; border: 0px; list-style-type: none; list-style-position: initial; word-wrap: normal; word-break: normal; line-height: 21px;">
+		<span style="color: rgb(0, 0, 0); word-wrap: normal; word-break: normal; line-height: 21px;">Expires&nbsp;的一个缺点就是，返回的到期时间是服务器端的时间，这样存在一个问题，如果客户端的时间与服务器的时间相差很大，那么误差就很大，所以在HTTP 1.1版开始，使用Cache-Control: max-age=秒替代。</span>
+	</p>
+	<p style="color: rgb(51, 51, 51); font-family: Arial; font-size: 14px; font-variant-ligatures: normal; orphans: 2; white-space: normal; widows: 2; background-color: rgb(255, 255, 255); margin-top: 0px; padding: 0px; border: 0px; list-style-type: none; list-style-position: initial; word-wrap: normal; word-break: normal; line-height: 21px;">
+		<span style="color: rgb(0, 0, 0); word-wrap: normal; word-break: normal; line-height: 21px;"><span style="word-wrap: normal; word-break: normal; line-height: 21px;"><span style="color: rgb(255, 0, 0);"><strong>Expires&nbsp;=max-age<span style="word-wrap: normal; word-break: normal; line-height: 21px;"></span>&nbsp;+&nbsp;&nbsp; “每次下载时的当前的request时间”</strong></span></span></span>
+	</p>
+</blockquote>
+<p>
+	在一些静态文件的请求头上加上cache-control和max-age属性可以将该文件长期缓存在浏览器端。这样有个问题，假设在缓存过期时间内我们想更换该静态文件怎么办？这个其实也很好办，将新的静态文件改个名字替代之前的外链就可以将原有的缓存实效，在大型网站的多个静态文件替换的时候最好采用分批模式，这样不会导致大批缓存同时失效应用服务器在短期内涌入大增量http请求导致服务器压力骤增。
+</p>
+<h4>
+	1.1.3&nbsp;css和必要的js放在页面最上面，其他js放在页面最下面
+</h4>
+<p>
+	这个问题老生常谈了，大部分web工作者应该都知道。浏览器要在页面加载完所有的css文件之后才会开始解析，所以要将css文件放在页面上方优先加载；而js文件是加载的时候就立即执行，这样不比要的js文件放在页面上方提前加载一方面是延长了页面解析的速度一方面可能会造成页面阻塞。我所指的”必要“，是指页面解析就要用到的js，比如我之前写的一个项目有个需求是左侧菜单栏要千人千面，也就是用户自定义菜单，这样每次初始化页面的时候我都要用js动态生成菜单，像这样的js的文件就不应该放到页面底部加载了。<br/>
+</p>
+<h4>
+	1.1.4 控制cookie的数量和大小
+</h4>
+<p>
+	cookie作为弥补http 协议无状态特性给开发者造成的不便而出现的技术，他会被包含在http的每次请求和响应中，太大的cookie会影响http请求传输的的速率，所以我们在使用cookie的时候要慎重地考虑放入cookie中的信息，尽量减少cookie的数据量。另一方面，一些静态资源像css，js和图片这些是不需要传递cookie的，所以静态资源我们可以采用单独的域名，避免传输多余的cookie。<br/>
+</p>
+<h4>
+	1.1.5 启用压缩
+</h4>
+<p>
+	在服务器端对文件进行压缩，在浏览器端对文件进行解压，这种方式可以极大地减少数据传输量。文本文件的压缩率可以达到80%以上，因此html，css，js文件启用Gzip压缩的效果会好。但是启用压缩会给服务器增加压力，如果服务器压力比较大的情况下对这种优化要慎重一点。具体的启用方法nginx，apache，iis各有不同，需要者可自行去学习，对于nginx的启用gzip的方式在后续的nginx优化文章中会有介绍。
+</p>
+<h3>
+	1.2 使用CDN缓存优化<br/>
+</h3>
+<p>
+	cdn的全称是内容分发网络，主要的原理也是缓存。将数据缓存在离用户最近的地方，使用户能以最快的速度访问到资源，所谓的网络访问第一跳。如下图，是采用了cdn之后网站的架构：<br/>
+</p>
+<p>
+	<br/>
+</p>
+<p>
+	<img src="http://luojia.ren/wp-content/uploads/2017/02/12021486802047.jpg" title="cdn.jpg" style="width: 747px; height: 383px;"/>
+</p>
+<h3>
+	1.3 使用反向代理
+</h3>
+<p>
+	反向代理服务器的位置如下图<br/>
+</p>
+<p>
+	<img src="http://luojia.ren/wp-content/uploads/2017/02/33201486802048.jpg" title="反向代理服务器.gif"/>
+</p>
+<p>
+	如图反向代理服务器代理外网所有主机的请求，反向代理服务器的主要功能有三：
+</p>
+<ul class=" list-paddingleft-2" style="list-style-type: disc;">
+	<li>
+		<p>
+			一是安全功能，反向代理服务器将应用服务器和外网隔离开来，应用服务器可以设置安全访问IP；
+		</p>
+	</li>
+	<li>
+		<p>
+			二是做缓存加速请求，反向代理服务器可以设置缓存，在用户第一次请求静态资源的时候就将资源缓存在代理服务器上，这样下一个同样的请求可以直接从代理服务器上返回资源；
+		</p>
+	</li>
+	<li>
+		<p>
+			三是可以做负载均衡，通过负载均衡可以建立服务器集群，改善网站在高并发情况下的性能。
+		</p>
+	</li>
+</ul>

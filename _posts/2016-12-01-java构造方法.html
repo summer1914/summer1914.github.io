@@ -1,0 +1,172 @@
+---
+layout: post
+title: 总结：java构造方法
+date: 2016-12-01
+categories: java
+tags: [程序基础]
+---
+
+<h2>
+	一 构造方法和实例方法的区别<br/>
+</h2>
+<ul class=" list-paddingleft-2" style="list-style-type: disc;">
+	<li>
+		<p>
+			<strong>修饰符：</strong>任何访问控制修饰符（default, public , protected, private）或者没有修饰符都可以对构造方法进行修饰，但非访问控制修饰符（final, abstract, strictfp）不可以修饰构造方法。
+		</p>
+	</li><span style="color: rgb(192, 0, 0);">构造方法用于初始化一个实例对象，所以static修饰是没有任何意义的;多个线程不会同时创建内存地址相同的同一个对象，所以synchronized修饰没有意义;</span>
+	<li>
+		<p>
+			<strong>返回类型：</strong><span style="color: rgb(192, 0, 0);">构造方法没有返回类型，void也不行。</span>实例方法可以返回任何类型的值或者是无返回值（void）
+		</p>
+	</li>
+	<li>
+		<p>
+			<strong>命名：</strong>构造方法的命名与类名相同（首字母大写），虽说实例方法的名称也可以与类名相同，但是习惯上我们为实例方法采用小驼峰命名<br/>
+		</p>
+	</li>
+</ul>
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Sample {  
+      
+    private int x;  
+  
+    public Sample() { // 不带参数的构造方法  
+        this(100);  
+    }  
+      
+    public Sample(int x) { //带参数的构造方法  
+        x=x;  
+    }  
+      
+    public int Sample(int x) { //不是构造方法  
+        return x++;  
+    }  
+  
+}</code></pre></div>
+<h2>
+	二 java的默认构造方法
+</h2>
+<p>
+	我们知道,java语言中规定每个类至少要有一个构造方法,为了保证这一点，当用户没有给java类定义明确的构造方法的时候,java为我们提供了一个默认的构造方法,这个构造方法没有参数,修饰符是public并且方法体为空。<span style="color: rgb(192, 0, 0);">如果用户有定义构造方法，就不会有默认构造方法！！！</span><br/>
+</p>
+<p>
+	其实默认的构造方法还分为两种：
+</p>
+<ul class=" list-paddingleft-2" style="list-style-type: disc;">
+	<li>
+		<p>
+			一种就是刚刚说过的隐藏的构造方法
+		</p>
+	</li>
+	<li>
+		<p>
+			另一种就是显示定义的默认构造方法.
+		</p>
+	</li>
+</ul>
+<p>
+	如果一个类中定义了一个或者多个构造方法,并且每一个构造方法都是带有参数形式的,那么这个类就没有默认的构造方法。
+</p>
+<h2>
+	三 实例方法和构造方法中this和super的使用
+</h2>
+<h3>
+	1)this的用法<br/>
+</h3>
+<p>
+	实例方法中可以使用this关键字,它指向<span style="color: rgb(192, 0, 0);">正在执行方法的类的实例对象</span>,当然static方法中是不可以使用this对象的,因为静态方法不属于类的实例对象;而构造方法中同样可以使用this关键字,构造器中的this是指向<span style="color: rgb(192, 0, 0);">同一个对象中不同参数的另一个构造器</span>。让我们来看下面的一段代码：
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>//类有两个构造器,第一个构造器给类的成员name赋值,第二个构造器调用第一个构造器给类的成员name一个初始值Jonn/Mary Doe
+public class Test {  
+    String name;  
+  
+    Test(String input) {  
+        name = input;  
+    }  
+  
+    Test() {  
+        this(&quot;John/Mary Doe&quot;);   
+        //构造方法中通过this关键字调用其他构造方法时,那么这句代码必须放在第一行,否则会编译错误
+        //构造方法中只能通过this调用一次其他的构造方法
+    }
+
+    public String getName(){
+    	return this.name;   
+    }  
+  
+    public static void main(String args[]) {  
+        Test p1 = new Test(&quot;digger&quot;);  //调用带参数的构造方法
+        Test p2 = new Test();  //调用不带参数的构造方法
+        System.out.println(p1.getName() + &quot;----&quot; + p2.getName());  //digger----John/Mary Doe
+    }  
+}</code></pre></div>
+<h3>
+	2)super的用法<br/>
+</h3>
+<p>
+	实例方法中的super关键字是去调用父类当中的某个方法
+</p>
+<p>
+	构造器中使用super关键字调用父类中的构造器
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>class GetBirthInfo {
+   GetBirthInfo(){
+		 System.out.println(&quot;auto&quot;); 
+   }   
+    void getBirthInfo() {  
+        System.out.println(&quot;born alive.&quot;);  
+    }  
+}  
+  
+class Test extends GetBirthInfo 
+{  
+	Test(){
+		super();  //调用父类的构造方法
+		System.out.println(&quot;hatch from eggs&quot;);  
+	}
+    void getBirthInfo() {  
+       System.out.println(&quot;a mammal normally is &quot;);  
+       super.getBirthInfo();   //调用了它的父类的void getBirthInfo()方法
+    }  
+}</code></pre></div>
+<h3>
+	四 类在继承关系上的初始化顺序问题<br/>
+</h3>
+<p>
+	在实例化子类对象时,程序会先调用父类的默认构造方法,然后再执行子类的构造方法。
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>class SuperClass   
+{   
+    SuperClass()   
+    {   
+        System.out.println(&quot;SuperClass constructor&quot;);   
+    }   
+}   
+public class SubClass extends SuperClass {  
+    SubClass()   
+    {   
+        System.out.println(&quot;SubClass constructor&quot;);   
+    }   
+    public static void main(String[] args) {  
+        SubClass sub = new SubClass();   
+    }   
+}   
+//执行结果： SuperClass constructor          SubClass constructor</code></pre></div>
+<p>
+	<br/>
+</p>
+<p>
+	初始化顺序：
+</p>
+<p>
+	父类的静态成员&gt;&gt;子类的静态成员&gt;&gt;父类的非静态成员&gt;&gt;父类的默认构造函数被调用&gt;&gt;子类的非静态对象（变量）&gt;&gt;子类的构造函数
+</p>
+<p>
+	&nbsp;
+</p>
+<p>
+	<span style="line-height: 19px; text-indent: 7px;"><span style="font-family: KaiTi_GB2312; font-size: 24px; color: rgb(153, 0, 0);"></span></span><br/>
+</p>
+<p>
+	<br/>
+</p>

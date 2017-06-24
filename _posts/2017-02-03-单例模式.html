@@ -1,0 +1,141 @@
+---
+layout: post
+title: 设计模式研究——单例模式
+date: 2017-02-03
+categories: 程序设计
+tags: [设计模式]
+---
+
+<h3 style="white-space: normal;">
+	理解
+</h3>
+<p style="white-space: normal;">
+	顾名思义，单例模式是确保一个类只有一个实例，而且自行实例化并向整个系统提供这个实例。在面向对象的开发环境中，单例模式是对全局变量的改进，在一些弱类型语言如PHP中你无法用一个错误的数据类型覆写一个单例，但若只是个全局变量那就不好说了。<br/>
+</p>
+<h3 style="white-space: normal;">
+	情景假设
+</h3>
+<p style="white-space: normal;">
+	我们在设计用户相关系统的时候经常会需要保存用户的偏好设置，我们可以写一个Preference类来在系统中传递用户的偏好设置。我们来提炼一下这个问题的关键点：<br/>
+</p>
+<ol class=" list-paddingleft-2" style="width: 875.890625px; white-space: normal;">
+	<li>
+		<p>
+			Preference对象应该可以被系统中的任何对象使用
+		</p>
+	</li>
+	<li>
+		<p>
+			Preference对象不应该存在会被覆盖的全局变量中
+		</p>
+	</li>
+	<li>
+		<p>
+			为保证各个对象所使用的用户偏好设置数据一致，系统中应只有一个Preference实例。
+		</p>
+	</li>
+</ol>
+<h3 style="white-space: normal;">
+	情景实现
+</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>class Preference
+{
+	private $props = array();
+	//关键点2:声明单例对象是静态的，静态变量是以类为作用域的属性
+	private static $instance;
+	/**
+	 * { 关键点1:构造函数必须私有，让客户端代码无法实例化对象 }
+	 */
+	private function __construct()
+	{
+	}
+	public function setProperty($key, $val)
+	{
+		$this-&gt;props[$key] = $val;
+	}
+	public function getProperty($key)
+	{
+		return $this-&gt;props[$key];
+	}
+	public static function getInstance()
+	{
+		if (empty(self::$instance)) {  //关键点3:判断单例对象是否已经被构造
+			self::$instance = new Preference();
+		}
+		return self::$instance;
+	}
+	}</code></pre></div>
+<p style="white-space: normal;">
+	<strong><br/></strong>
+</p>
+<p style="white-space: normal;">
+	<strong>测试</strong>
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>$instance1 = Preference::getInstance();
+$instance1-&gt;setProperty(&quot;name&quot;, &quot;summer&quot;);
+unset($instance1);
+$instance2 = Preference::getInstance();
+	print $instance2-&gt;getProperty(&quot;name&quot;);   //输出：summer，测试成功</code></pre></div>
+<p style="white-space: normal;">
+	<strong><br/></strong>
+</p>
+<p style="white-space: normal;">
+	<strong>实现关键点归纳：</strong>
+</p>
+<ol class=" list-paddingleft-2" style="width: 875.890625px; white-space: normal;">
+	<li>
+		<p>
+			构造函数必须私有化
+		</p>
+	</li>
+	<li>
+		<p>
+			单例对象必须为类的静态属性
+		</p>
+	</li>
+	<li>
+		<p>
+			构造单例对象的时候必须判断是否已经被实例化了，确保不会覆盖原单例对象
+		</p>
+	</li>
+</ol>
+<p style="white-space: normal;">
+	<em>假设这是在面试PHP，这代码是可以通过，因为PHP默认并不支持多线程（安装PHP多线程扩展模块另说），但要是在面试java，c#这种多线程编程语言上述代码就存在<span style="color: rgb(192, 0, 0);">线程不安全问题</span>。</em><br/>
+</p>
+<p style="white-space: normal;">
+	<strong><em><br/></em></strong>
+</p>
+<p style="white-space: normal;">
+	<strong><em>c#改进版：</em></strong>
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>public class Preference {  
+    private Preference() {}                     //关键点1：构造函数是私有的
+    private static Preference instance = null;    //关键点2：声明单例对象是静态的
+    private static object obj= new object();
+    public static Preference GetInstance()      //通过静态方法来构造对象
+    {                        
+         if (instance === null)                   //关键点3：判断单例对象是否已经被构造
+         {                             
+            lock(obj)                          //关键点4：加线程锁
+            {
+               if(instance === null)              //关键点5：二次判断单例是否已经被构造
+               {
+                  instance = new Singleton();  
+                }
+             }
+         }    
+        return instance;  
+    }  
+	}</code></pre></div>
+<p style="white-space: normal;">
+	<br/>
+</p>
+<p style="white-space: normal;">
+	<span style="color:#c00000"><br/></span>
+</p>
+<p style="white-space: normal;">
+	<br/>
+</p>
+<h3>
+	<br/>
+</h3>

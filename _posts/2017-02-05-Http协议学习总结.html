@@ -1,0 +1,369 @@
+---
+layout: post
+title: Http协议学习总结
+date: 2017-02-05
+categories: 计算机基础
+tags: [Http协议]
+---
+
+<p>
+	面试是最能让人发现自己不足的场景，为了每一次面试都能吸取点教训，决定以后每一次没表现好的面试都将自己的盲点和短板总结学习一遍，也供其他小伙伴参考。<br/>
+</p>
+<h3>
+	一 HTTP的特性<br/>
+</h3>
+<ul class=" list-paddingleft-2" style="list-style-type: disc;">
+	<li>
+		<p>
+			支持客户—服务器模式（简称C／S结构，是一种网络架构，特点是将客户端和服务器端分开来，每一个客户端软件的实例都可以向一个服务器发出请求）
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">无连接（短连接）</span>：限定每次连接只处理一次请求，服务器处理完请求并收到客户端应答后即断开连接。
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">无状态：</span>协议对于事务没有记忆能力，服务器不知道客户端是什么状态。即我们给服务器发送请求之后，服务器会根据请求将数据发送过来，但是发送完成之后服务器端不会记录任何信息
+		</p>
+	</li>
+	<li>
+		<p>
+			简单快速：只需向服务器传送请求方法和路径便可完成一次http请求
+		</p>
+	</li>
+	<li>
+		<p>
+			灵活：允许传输多种类型的数据，正在传输的类型由content type标记
+		</p>
+	</li>
+</ul>
+<p>
+	<br/>
+</p>
+<h4>
+	1.1无连接详解
+</h4>
+<p>
+	无连接的含义是每次连接只处理一个请求，服务器处理完客户端请求并收到客户端应答后即断开请求。采用这种方式可以节省传输时间。<br/>
+</p>
+<p>
+	早期这么做是因为服务器往往面向全世界数十万上百万的客户端的网页访问，但每个客户端与服务器端交互的间歇性较大，而且由于网页的发散性客户端每两次请求的数据关联性很低，<span style="color: rgb(192, 0, 0);">大部分通道实际上会很空闲，无端占用资源<span style="color: rgb(0, 0, 0);">。因此http设计者将http协议设计为请求时建立连接，请求完成释放连接，以尽快将资源开放出来给其他的客户端。</span></span>
+</p>
+<p>
+	随着技术的发展，网页里面开始有大量的图片，视频，音乐等多媒体文件，这样每次访问这些多媒体文件都要建立一次TCP连接就显得很低效。所以keep-alive被提出来解决这个低效率问题。
+</p>
+<p>
+	<span style="color: rgb(192, 0, 0);">keep-alive功能使客户端和服务器端建立的连接持续有效</span>，这样当出现对服务器的后续请求的时候，不用再建立连接。对于静态网站来说，这个功能很有用，但是对于负担比较重的网站来说，这依然是个问题，本来可以释放的资源一直被占用着，会影响服务器性能。
+</p>
+<p>
+	<span style="color: rgb(192, 0, 0);">注意：</span>
+</p>
+<ol class=" list-paddingleft-2" style="list-style-type: decimal;">
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">HTTP Keep-Alive 简单说就是保持当前的TCP连接，避免了重新建立连接。</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">HTTP 长连接不可能一直保持，例如&nbsp;Keep-Alive: timeout=5, max=100，表示这个TCP通道可以保持5秒，max=100，表示这个长连接最多接收100次请求就断开。</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">HTTP是一个无状态协议，这意味着每个请求都是独立的，Keep-Alive没能改变这个结果。另外，Keep-Alive也不能保证客户端和服务器之间的连接一定是活跃的，在HTTP1.1版本中也如此。唯一能保证的就是当连接被关闭时你能得到一个通知，所以不应该让程序依赖于Keep-Alive的保持连接特性，否则会有意想不到的后果。</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">使用长连接之后，客户端、服务端怎么知道本次传输结束呢？两部分：1. 判断传输数据是否达到了Content-Length 指示的大小；2. 动态生成的文件没有 Content-Length ，它是分块传输（chunked），这时候就要根据 chunked 编码来判断，chunked 编码的数据在最后有一个空 chunked 块，表明本次传输数据结束，详见<a href="http://www.cnblogs.com/skynet/archive/2010/12/11/1903347.html" target="_blank" style="box-sizing: border-box; -webkit-font-smoothing: antialiased; text-decoration: none; color: rgb(65, 131, 196); background-color: rgb(255, 255, 255); font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-variant-ligatures: normal; letter-spacing: 0.2px; orphans: 3; white-space: normal; widows: 3; background-position: 0px 0px; background-repeat: initial initial;">这里</a>。</span>
+		</p>
+	</li>
+</ol>
+<h4>
+	1.2无状态详解<br/>
+</h4>
+<p>
+	如上所说，http的无状态表示他对事务没有任何记忆，服务器端收到客户端请求后会根据请求发送数据，但不会对客户端做任何记录，服务器端不清楚客户端是什么状态。就好比我们登陆一个网站，拿到了一个通关令牌，用这个令牌去请求数据，服务器根据这个令牌辨别我们的身份正常返回，即使是刷新一下网页，倘若下次请求你不发这个令牌了服务器端依旧不认得你是谁。<br/>
+</p>
+<p>
+	也正是由于这个特性，当客户端和服务器端进行动态交互的web程序出现后，无状态严重阻碍了这些应用程序的实现。毕竟动态交互是需要承前启后的。于是，两种用于http保持连接状态的技术就出现了，一个是cookie，一个是session。
+</p>
+<h5>
+	1.2.1关于cookie<br/>
+</h5>
+<p>
+	简单的说cookie就是浏览器存储在用户电脑上的一小段文本。cookie是一段纯文本不包括任何可执行性代码，浏览器会按照一定的规范来存储这些信息，并在随后的请求中将这些信息发送至服务器，web服务器就可以利用这些信息来识别不同的用户。常见例子是大多数网站在登陆成功之后都会设置一个cookie用于之后的请求中让服务器分辨用户的信息。<br/>
+</p>
+<p>
+	cookie详解推荐文章：<a href="http://bubkoo.com/2014/04/21/http-cookies-explained/">http://bubkoo.com/2014/04/21/http-cookies-explained/</a>
+</p>
+<h5>
+	1.2.2关于session：
+</h5>
+<p>
+	当客户端访问服务器端时，服务器会根据需求设置session，将会话信息保存在服务器上，同时将session的session ID传给浏览器，浏览器要将这个sessionID保存在内存中，我们称之为无过期时间的cookie，当浏览器关闭，客户端保存的该信息会被清除。<br/>
+</p>
+<p>
+	<br/>
+</p>
+<h3>
+	<span style="font-size: 16px;">二 HTTP协议的报文</span><br/>
+</h3>
+<h4>
+	2.1请求报文
+</h4>
+<p>
+	http协议是以ASCII码进行传输，建立在TCP/IP规范之上的应用层规范。协议将请求报文分为三个部分：状态行，请求头，消息主体。
+</p>
+<p>
+	http定义了不同的和服务器进行交互的方法，最基本的有get，put，patch，delete，post。URL的全称是资源描述符。所以可以这样理解，一个URL用于描述一个网络上的资源，而get，put，patch，delete，post对应资源的查，改，删，增。
+</p>
+<p>
+	注意：
+</p>
+<ol class=" list-paddingleft-2" style="list-style-type: decimal;">
+	<li>
+		<p>
+			get可提交的数据量受到URL长度的限制，http 协议没有对URL长度进行限制。这个限制来自于特定的服务器和浏览器
+		</p>
+	</li>
+	<li>
+		<p>
+			理论上讲post提交的数据是没有大小限制的，出于安全考虑，服务器软件在实现时会做限制
+		</p>
+	</li>
+	<li>
+		<p>
+			get和post的数据在报文中的位置不同，一个在URL里，一个在http包的包体里<br/>
+		</p>
+	</li>
+</ol>
+<p>
+	GET报文例子：
+</p>
+<pre class="brush:xml;toolbar:false"> GET /books/?sex=man&amp;name=Professional HTTP/1.1
+ Host: www.example.com
+ User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.6)
+ Gecko/20050225 Firefox/1.0.1
+ Connection: Keep-Alive</pre>
+<p>
+	POST报文例子
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code> POST / HTTP/1.1
+ Host: www.example.com
+ User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.6)
+ Gecko/20050225 Firefox/1.0.1
+ Content-Type: application/x-www-form-urlencoded
+ Content-Length: 40
+ Connection: Keep-Alive
+
+ sex=man&amp;name=Professional</pre>
+<h4>
+	2.2响应报文
+</h4>
+<p>
+	响应报文也一样包括状态行，请求头，消息主体。<br/>
+</p>
+<p>
+	常见状态码：
+</p>
+<ul class=" list-paddingleft-2" style="list-style-type: disc;">
+	<li>
+		<p>
+			200 客户端请求成功
+		</p>
+	</li>
+	<li>
+		<p>
+			301 请求永久转移
+		</p>
+	</li>
+	<li>
+		<p>
+			302 请求临时转移
+		</p>
+	</li>
+	<li>
+		<p>
+			304 文件未修改，可直接使用缓存文件
+		</p>
+	</li>
+	<li>
+		<p>
+			400 客户端的请求由于发错误，不能被服务器所理解
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(51, 51, 51); font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-variant-ligatures: normal; letter-spacing: 0.2px; orphans: 2; widows: 2; background-color: rgb(255, 255, 255);"></span>401&nbsp;请求未经授权。必须和<span style="color: rgb(51, 51, 51); font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-variant-ligatures: normal; letter-spacing: 0.2px; orphans: 2; widows: 2; background-color: rgb(255, 255, 255);">WWW-Authenticate报头域一起使用</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(51, 51, 51); font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-variant-ligatures: normal; letter-spacing: 0.2px; orphans: 2; widows: 2; background-color: rgb(255, 255, 255);">403 服务器收到请求，但是拒绝提供服务</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(51, 51, 51); font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-variant-ligatures: normal; letter-spacing: 0.2px; orphans: 2; widows: 2; background-color: rgb(255, 255, 255);">404 请求的资源不存在</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(51, 51, 51); font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-variant-ligatures: normal; letter-spacing: 0.2px; orphans: 2; widows: 2; background-color: rgb(255, 255, 255);">500 服务器发生了不可预期的错误</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(51, 51, 51); font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-variant-ligatures: normal; letter-spacing: 0.2px; orphans: 2; widows: 2; background-color: rgb(255, 255, 255);">503 服务器当前不能够处理客户端的请求在一段时间之后可能会恢复正常</span>
+		</p>
+	</li>
+</ul>
+<h4>
+	2.3扩展：条件get
+</h4>
+<p>
+	HTTP的条件get是http协议为了减少宽带浪费提出的一种方案。
+</p>
+<p>
+	<strong>2.3.1 使用时机？</strong>
+</p>
+<p>
+	客户端之前已经访问过某资源，并打算再次访问
+</p>
+<p>
+	<strong>2.3.2 使用方法？</strong>
+</p>
+<p>
+	客户端向服务器发送一个包询问是否在上一次访问网站的时间后是否更改了页面，如果服务器没有更新，显然不需要把整个网页传给客户端，客户端只要使用本地缓存即可，如果服务器对照客户端给出的时间已经更新了客户端请求的网页，则发送这个更新了的网页给用户。
+</p>
+<p>
+	示例：
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code> GET / HTTP/1.1
+ Host: www.sina.com.cn:80
+ If-Modified-Since:Thu, 4 Feb 2010 20:39:13 GMT
+	Connection: Close</code></pre></div>
+<p>
+	第一次请求时，服务器端返回请求数据，之后的请求，服务器根据请求中的&nbsp;If-Modified-Since&nbsp;字段判断响应文件没有更新，如果没有更新，服务器返回一个&nbsp;304 Not Modified响应，告诉浏览器请求的资源在浏览器上没有更新，可以使用已缓存的上次获取的文件。如果服务器已经更新的话就反回正常的响应。
+</p>
+<h3>
+	三 HTTP Pipelining（管线化）<br/>
+</h3>
+<p>
+	默认情况下 HTTP 协议中每个传输层连接只能承载一个 HTTP 请求和响应，浏览器会在收到上一个请求的响应之后，再发送下一个请求。在使用持久连接的情况下，某个连接上消息的传递类似于请求1 -&gt; 响应1 -&gt; 请求2 -&gt; 响应2 -&gt; 请求3 -&gt; 响应3。
+</p>
+<p>
+	HTTP Pipelining（管线化）是将多个 HTTP 请求整批提交的技术，在传送过程中不需等待服务端的回应。使用 HTTP Pipelining 技术之后，某个连接上的消息变成了类似这样请求1 -&gt; 请求2 -&gt; 请求3 -&gt; 响应1 -&gt; 响应2 -&gt; 响应3。
+</p>
+<p>
+	<span style="color: rgb(192, 0, 0);">注意下面几点：</span>
+</p>
+<ol class=" list-paddingleft-2" style="list-style-type: decimal;">
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">管线化机制通过持久连接（persistent connection）完成，仅 HTTP/1.1 支持此技术（HTTP/1.0不支持）</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">只有 GET 和 HEAD 请求可以进行管线化，而 POST 则有所限制</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">初次创建连接时不应启动管线机制，因为对方（服务器）不一定支持 HTTP/1.1 版本的协议</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">管线化不会影响响应到来的顺序，如上面的例子所示，响应返回的顺序并未改变</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">HTTP /1.1 要求服务器端支持管线化，但并不要求服务器端也对响应进行管线化处理，只是要求对于管线化的请求不失败即可</span>
+		</p>
+	</li>
+	<li>
+		<p>
+			<span style="color: rgb(192, 0, 0);">由于上面提到的服务器端问题，开启管线化很可能并不会带来大幅度的性能提升，而且很多服务器端和代理程序对管线化的支持并不好，因此现代浏览器如 Chrome 和 Firefox 默认并未开启管线化支持</span>
+		</p>
+	</li>
+</ol>
+<p>
+	更多关于 HTTP Pipelining 的知识可以参考<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Pipelining_FAQ" target="_blank" style="box-sizing: border-box; -webkit-font-smoothing: antialiased; outline: 0px; color: rgb(65, 131, 196); background-color: rgb(255, 255, 255); font-family: &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-variant-ligatures: normal; letter-spacing: 0.2px; orphans: 3; white-space: normal; widows: 3; background-position: 0px 0px; background-repeat: initial initial;">这里</a>
+</p>
+<h3>
+	四 扩展问题<br/>
+</h3>
+<h4>
+	4.1 跨站攻击
+</h4>
+<h5 style="white-space: normal;">
+	4.1.1 CSRF<span style="font-size: 16px;">（Cross-site request forgery, 跨站请求伪造）</span>
+</h5>
+<p>
+	<span style="font-size: 16px;">顾名思义，是冒充用户在站内正常操作。<br/></span>
+</p>
+<p>
+	如何防范？
+</p>
+<ol class=" list-paddingleft-2" style="list-style-type: decimal;">
+	<li>
+		<p>
+			关键操作只接受post
+		</p>
+	</li>
+	<li>
+		<p>
+			重要操作使用验证码
+		</p>
+	</li>
+	<li>
+		<p>
+			检测头文件的Referer。但是问题是服务器不是任何时候都能接收到referer的值，所以这招一般用于监控CSRF的发生，而不是用来抵御。
+		</p>
+	</li>
+	<li>
+		<p>
+			目前主流是用token来抵御CSRF攻击。该攻击成功的条件在于可以预测出所有参数从而构造合法请求。所以我们要尽量让参数变得不可预测性来防止攻击。通用的做法是保持原有参数不变，另外添加一个随机生成的token，这样攻击者因为不知道token而无法构造出合法的请求进行攻击（注意：token必须足够随机；保证token的一次性；token注意保密性，敏感操作用post，防止token出现在URL中）
+		</p>
+	</li>
+</ol>
+<p>
+	<span style="color: rgb(192, 0, 0);">注意：过滤用户的输入并不能防止CSRF，我们要做的过滤请求的来源<br/></span>
+</p>
+<h5>
+	<span style="font-size: 16px;">4.1.2 XSS（Cross Site Scripting）<br/></span>
+</h5>
+<p>
+	全称“跨站脚本”，是注入攻击的一种。其特点是不对服务器造成伤害，是通过一些正常的站内交互途径，例如发布评论，提交了含有js的内容文本。如果服务器没有过滤或是转译掉这些文本，下次用户访问的时候就会运行这些脚本。
+</p>
+<p>
+	例如
+</p>
+<pre class="brush:js;toolbar:false">while (true) {
+      alert(&quot;你关不掉我~&quot;);
+}</pre>
+<p>
+	<br/>
+</p>
+<p>
+	XSS 是实现 CSRF 的诸多途径中的一条，但绝对不是唯一的一条。一般习惯上把通过 XSS 来实现的 CSRF 称为 XSRF。
+</p>
+<p>
+	如何防御？
+</p>
+<p>
+	最简单直接的办法就是充分过滤用户输入的文本！
+</p>
+<p>
+	<span style="color: rgb(192, 0, 0);">当我们需要用户输入 HTML 的时候，需要对用户输入的内容做更加小心细致的处理。仅仅粗暴地去掉 script 标签是没有用的，任何一个合法 HTML 标签都可以添加 onclick 一类的事件属性来执行 JavaScript。更好的方法可能是，将用户的输入使用 HTML 解析库进行解析，获取其中的数据。然后根据用户原有的标签属性，重新构建 HTML 元素树。构建的过程中，所有的标签、属性都只从白名单中拿取。</span>
+</p>
+<p>
+	<br/>
+</p>

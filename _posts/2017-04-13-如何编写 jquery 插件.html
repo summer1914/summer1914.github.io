@@ -1,0 +1,335 @@
+---
+layout: post
+title: 实例总结如何编写 jquery 插件
+date: 2017-04-13
+categories: javascript
+tags: [jQuery]
+---
+
+<h3 style="white-space: normal;">
+	一 开发插件的两个方法
+</h3>
+<h4 style="white-space: normal;">
+	1. jQuery.fn.extend(object)<br/>
+</h4>
+<p style="white-space: normal;">
+	扩展jquery对象，为对象添加方法
+</p>
+<p style="white-space: normal;">
+	查看jquery的源码可以发现，fn的定义如下：
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>jQuery.fn = jQuery.prototype = {
+    init: function(selector, context){
+        ...
+    }
+}</code></pre></div>
+<p style="white-space: normal;">
+	jQuery.fn = jQuery.prototype, prototype 即原型，想必大家应该很熟悉了。在js中，所有的对象都从同一个实例对象上继承属性。因此，原型对象是类的核心，扩展原型即扩展对象的功能。jQuery是一个封装的非常好的类，我们使用类似语句$(&quot;#btn&quot;)会生成一个jquery类的实例。
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>//定义一个名为myPlugin的插件
+jQuery.fn.extend(
+    myPlugin: function(){
+        alert(&quot;test&quot;);
+    }
+)
+
+//使用该插件
+$(&quot;#btn&quot;).myPlugin();</code></pre></div>
+<h4 style="white-space: normal;">
+	2. jQuery.extend(object)
+</h4>
+<p style="white-space: normal;">
+	扩展jquery类的本身，为类添加新的方法和属性。如何对PHP，java等类有一定的了解的话，可以理解为为类添加静态属性和方法
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>jQuery.extend({
+    add: function(a, b){
+        return a+b;
+    }
+});
+
+//使用
+$.add(3, 4);  // return 7</code></pre></div>
+<h3 style="white-space: normal;">
+	二 关于如何选方法<br/>
+</h3>
+<p style="white-space: normal;">
+	如上所述，jquery提供两种扩展的方法，我们在编写插件的时候如何选？有面向对象编程经验的朋友想必心里已经很明了，如果添加的方法和属性是作用于特定的对象，我们选为jquery对象扩展功能；如果添加的功能和方法与特定对象没多大关系，可以选择给JQuery类添加方法或属性。<br/>
+</p>
+<h3 style="white-space: normal;">
+	三 开始第一个插件(为对象扩展功能为例)<br/>
+</h3>
+<h4 style="white-space: normal;">
+	3.1 定义插件<br/>
+</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code>//标准写法
+jQuery.fn.extend(
+    fileUploader: function(){
+        //...
+    }
+)
+
+//简写
+jQuery.fn.fileUploader = function(){
+    //...
+}
+
+//最佳推荐:可以安全地使用$
+(function($){
+    $.fn.fileUploader = function(){
+        //...
+    }
+})(jQuery)</code></pre></div>
+<blockquote style="white-space: normal;">
+	<p>
+		关于上下文：在插件函数的立即作用域中，关键字this指向调用插件的jquery对象而不是原生的dom元素，在这不必进行$(this)这种多余的包装<br/>
+	</p>
+	<div class="highlighter-rouge"><pre class="highlight"><code>(function($){
+    $.fn.testPlugin = function(){
+        return this.attr(&#39;class&#39;);
+    }
+})(jQuery)</code></pre></div>
+</blockquote>
+<h3 style="white-space: normal;">
+	3.2 让插件可配置
+</h3>
+<p style="white-space: normal;">
+	如果插件有很多配置项，出于使用友好考虑，我们最好是让用户可以传入自定义参数；更加友好的做法是，我们可以给可以自定义的参数设置默认值。如我的文件上传插件我需要让用户自定义初始化文件，上传配置，上传成功回调，上传失败回调，如下：<br/>
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>(function($){
+    $.fn.fileUploader = function (options) {    
+       var settings = $.extend({
+          &#39;files&#39;: [],
+          &#39;uploadConfig&#39;: {&#39;url&#39;: &#39;&#39;, &#39;configData&#39;: {}},
+          &#39;onUploadSuccess&#39;: function (re, file) {},
+          &#39;onUploadFail&#39;: function (re) {}
+       }, options);
+    }
+})(jQuery)</code></pre></div>
+<h3 style="white-space: normal;">
+	3.3 注意插件的命名空间
+</h3>
+<p style="white-space: normal;">
+	正确的命名空间可以使的插件很难被其他插件或者页面中的其他代码覆盖，关于命名的利害关系这事仁者见仁智者见智，但他的重要性是毋庸置疑的。
+</p>
+<h4 style="white-space: normal;">
+	3.3.1 插件方法的命名空间
+</h4>
+<p style="white-space: normal;">
+	单个插件一定不能在$.fn上定义多个命名空间，这是原则。如下，是非常糟糕的代码实践
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>(function( $ ){
+
+  $.fn.fileUploader = function( options ) { 
+    // 这
+  };
+  $.fn.fileUploaderCheckFile = function( ) {
+    // 不
+  };
+  $.fn.fileUploaderUpload = function( ) { 
+    // 好
+  };
+  $.fn.fileUploaderRemoveFile = function() { 
+    // !!!  
+  };
+
+})( jQuery );</code></pre></div>
+<p style="white-space: normal;">
+	要解决这个问题，我们应该把自己的插件方法收集到一个对象中，用户通过传递方法名称字符串来调用相应的方法。学习范例推荐，bootstrap的modal和tooltip插件。修正如下：
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>(function( $ ){
+
+  var methods = {
+    init : function( options ) { 
+      // 这 
+    },
+    show : function( ) {
+      // 很
+    },
+    hide : function( ) { 
+      // 好
+    },
+    update : function( content ) { 
+      // !!! 
+    }
+  };
+
+  $.fn.tooltip = function( method ) {
+    // Method calling
+    if ( methods[method] ) {
+      return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+    } else if ( typeof method === &#39;object&#39; || ! method ) {
+      return methods.init.apply( this, arguments );
+    } else {
+      $.error( &#39;Method &#39; +  method + &#39; does not exist on jQuery.tooltip&#39; );
+    }    
+  
+  };
+
+})( jQuery );
+
+// 调用  init 方法
+$(&#39;div&#39;).tooltip(); 
+
+// 调用  init 方法
+$(&#39;div&#39;).tooltip({
+  foo : &#39;bar&#39;
+});
+
+// 调用 hide 方法
+$(&#39;div&#39;).tooltip(&#39;hide&#39;); 
+
+// 调用 update 方法
+$(&#39;div&#39;).tooltip(&#39;update&#39;, &#39;This is the new tooltip content!&#39;);</code></pre></div>
+<h4 style="white-space: normal;">
+	3.3.2 插件事件的命名空间
+</h4>
+<p style="white-space: normal;">
+	有的时候在用户给jquery对象初始化我们的插件的时候，我们需要为对象绑定一些事件，这个时候我们会意识到一个问题，如果我们绑定的事件和用户自定义给该对象绑定的事件同名怎么办？这个时候我们就需要为我们的插件事件添加命名空间了，如下<br/>
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>(function( $ ){
+
+  var methods = {
+     init : function( options ) {
+
+       return this.each(function(){
+         $(window).bind(&#39;resize.tooltip&#39;, methods.reposition);
+       });
+
+     },
+     destroy : function( ) {
+
+       return this.each(function(){
+         $(window).unbind(&#39;.tooltip&#39;);
+       })
+
+     },
+     reposition : function( ) { 
+       // ... 
+     },
+     show : function( ) { 
+       // ... 
+     },
+     hide : function( ) {
+       // ... 
+     },
+     update : function( content ) { 
+       // ...
+     }
+  };
+
+  $.fn.tooltip = function( method ) {
+    
+    if ( methods[method] ) {
+      return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+    } else if ( typeof method === &#39;object&#39; || ! method ) {
+      return methods.init.apply( this, arguments );
+    } else {
+      $.error( &#39;Method &#39; +  method + &#39; does not exist on jQuery.tooltip&#39; );
+    }    
+  
+  };
+
+})( jQuery );
+
+$(&#39;#fun&#39;).tooltip();
+// Some time later...
+$(&#39;#fun&#39;).tooltip(&#39;destroy&#39;);</code></pre></div>
+<h3 style="white-space: normal;">
+	4. 让插件可链式调用
+</h3>
+<p style="white-space: normal;">
+	我们都熟悉jquery的链式调用，如<br/>
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>$(&#39;body&#39;).find(&#39;p#test&#39;).text(&#39;链式调用用着很舒服吧&#39;);</code></pre></div>
+<p style="white-space: normal;">
+	如果我们的插件并没有特定的返回值，那么我们应该尽量保持插件的链式调用。如何让我们的插件不破坏这种链式调用呢？也就是如何实现：
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>$(&#39;#file-upload-box&#39;).fileUploader().tooltip();</code></pre></div>
+<p style="white-space: normal;">
+	简单，为了保持插件的可链式调用，必须确保插件返回this关键字
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>(function($){
+    $.fn.fileUploader = function (options) {
+       return this.each(function(options){
+           var $this = $(this);
+           var settings = $.extend({
+              &#39;files&#39;: [],
+              &#39;uploadConfig&#39;: {&#39;url&#39;: &#39;&#39;, &#39;configData&#39;: {}},
+              &#39;onUploadSuccess&#39;: function (re, file) {},
+              &#39;onUploadFail&#39;: function (re) {}
+           }, options);
+       });    
+    }
+})(jQuery)</code></pre></div>
+<h3 style="white-space: normal;">
+	<span style="font-size: 16px;">5. 示例插件效果</span>
+</h3>
+<h4 style="white-space: normal;">
+	5.1 完整源码
+</h4>
+<p style="white-space: normal;">
+	<a href="https://github.com/summer1914/file-uploader">https://github.com/summer1914/file-uploader</a>
+</p>
+<h4 style="white-space: normal;">
+	5.2 使用效果
+</h4>
+<p>
+	<img src="https://www.luojia.ren/wp-content/uploads/2017/04/WechatIMG1.jpeg" style="float:none;" title="WechatIMG1.jpeg"/>
+</p>
+<p>
+	<img src="https://www.luojia.ren/wp-content/uploads/2017/04/WechatIMG2.jpeg" style="float:none;" title="WechatIMG2.jpeg"/>
+</p>
+<h4 style="white-space: normal;">
+	5.3 使用方法
+</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code>//使用默认值初始化
+$(&#39;.file-uploader&#39;).fileUploader();
+
+//带文件的初始化（适用于编辑页面）
+$(&#39;.file-uploader-with-init-file&#39;).fileUploader({
+	&#39;files&#39;: [{
+		&quot;name&quot;: &quot;test.png&quot;,
+		&quot;url&quot;: &quot;https://test.com/test.jpeg&quot;,
+		&quot;size&quot;:10000
+	}]
+});
+
+//配置前端上传文件
+$(&#39;.file-uploader-with-init-file&#39;).fileUploader({
+        &#39;uploadConfig&#39;:{&#39;url&#39;:&#39;your server upload adress&#39;, &#39;params&#39;: {//your server upload auth params}}
+        &#39;onUploadSucess&#39;:function(re){},
+        &#39;onUploadSucess&#39;:function(re){},
+	&#39;files&#39;: [{
+		&quot;name&quot;: &quot;test.png&quot;,
+		&quot;url&quot;: &quot;https://test.com/test.jpeg&quot;,
+		&quot;size&quot;:10000
+	}]
+});</code></pre></div>
+<p>
+	<br/>
+</p>
+<h3 style="white-space: normal;">
+	补充：关于插件数据维护，data属性的充分利用
+</h3>
+<p style="white-space: normal;">
+	大部分插件的初始化需要用户在dom加载完后，手动传入jquery对象调用插件方法初始化，这并不是对用户最友好的的做法。另外有时我们需要维护很多地插件数据，比如效果在左边展示还是右边展示，这些数据如何管理会更友好一些？用过bootstrap插件的小伙伴应该知道，bootstrap的所有插件仅仅通过data属性api就可以初始化，无须用户写一行js代码，这种方式对用户来说使用便捷对程序员来说一定程度上提高了了代码的强壮性，原因如下，以bootstrap插件警告框alert的为例：
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>//js调用
+$(&#39;.myAlert&#39;).alert();  //如果jquery的modal方法不存在，js会报错</code></pre></div>
+<pre class="brush:html;toolbar:false">&lt;!--data api 调用--&gt;
+&lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;alert&quot; aria-label=&quot;Close&quot;&gt;&lt;/button&gt;</code></pre></div>
+<p>
+	原因从插件的源码可以得知，前者是显示调用了js方法，后者是监听document中的元素。源码如下，建议自己去好好看看bootstrap.js
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>/* ALERT NO CONFLICT
+  * ================= */
+  $.fn.alert.noConflict = function () {
+    $.fn.alert = old
+    return this
+  }
+ /* ALERT DATA-API
+  * ============== */
+  $(document).on(&#39;click.alert.data-api&#39;, dismiss, Alert.prototype.close)</code></pre></div>
+<p>
+	<br/>
+</p>
