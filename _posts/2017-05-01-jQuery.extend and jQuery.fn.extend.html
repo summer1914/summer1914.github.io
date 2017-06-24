@@ -1,0 +1,129 @@
+---
+layout: post
+title: jQuery深究（二）：jQuery.extend()和 jQuery.fn.extend()
+date: 2017-05-01
+categories: javascript
+tags: [jQuery]
+---
+
+<p>
+	在《<a href="https://www.luojia.ren/index.php/archives/3909" target="_blank">实例总结如何编写 jquery 插件</a>》一文中提到过，jQuery.extend(object)和 jQuery.fn.extend(object)是jQuery提供的两个扩展jQuery功能的接口，今天来研究一下这两个接口的实现原理。
+</p>
+<h3>
+	一 功能描述
+</h3>
+<p>
+	方法jQuery.extend()和 jQuery.fn.extend()都是用于合并两个或者多个对象属性到第一个对象。使用语法如下：
+</p>
+<pre class="brush:js;toolbar:false">jQuery.extend([deep], target, object1[,objectN])
+jQuery.fn,extend([deep], target, object1[,objectN])</pre>
+<p>
+	参数deep是可选的布尔值，表示是否进行深度合并（递归合并）。合并默认是不递归的，也就是说如果第一个参数的属性为对对象或者数组，她会被后面的对象的同名属性完全覆盖。如果为true，则表示进行深度合并，合并过程是递归的。
+</p>
+<p>
+	参数target是指目标对象，后面的object1...objectN是源对象，包含待合并的属性。如果用户传入两个或者更多对象，所有源对象的目标会被合并到目标对象；<span style="color: rgb(192, 0, 0);">如果用户仅传入一个对象，意味着参数target被忽略，jQuery或者jQuery.fn会被当作目标对象，通过这种方式我们可以在jQuery或jQuery.fn上添加新的属性和方法，jQuery的许多模块功能就是这么实现的，而我们也用这种方式来为jQuery编写插件。</span>
+</p>
+<h3>
+	二 源码分析
+</h3>
+<p>
+	如下，为jQuery-3.2.1源码中上面两个方法的实现源码，中文注释为笔者手动添加
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>jQuery.extend = jQuery.fn.extend = function() { //定义jQuery.extend()和 jQuery.fn.extend()
+   var options, name, src, copy, copyIsArray, clone,
+      target = arguments[ 0 ] || {},
+      i = 1,
+      length = arguments.length,
+      deep = false;
+      /*
+      各变量的用途如下：
+      options:指向某个源对象
+      name:表示某个源对象的某个属性名
+      copy:表示某个源对象的某个属性的原始值
+      src:表示目标对象的某个属性的原始值
+      copyIsArray:变量copy是否是数组
+      clone:表示深度复制时原始值的修正值
+      target:指向目标对象
+      i:源对象的起始下标
+      length:表示参数的个数，用于修正变量target
+      deep:是否执行深度复制，默认false
+      */
+
+   // Handle a deep copy situation
+   if ( typeof target === &quot;boolean&quot; ) {
+      deep = target;  //修正target的起始值
+
+      // Skip the boolean and the target
+      target = arguments[ i ] || {};  //用户传了deep的话，修正target为第二个参数或者为空对象
+      i++;
+   }
+
+   // Handle case when target is a string or something (possible in deep copy)
+   //target必须是object或者函数，因为在string或者其他基本类型上设置非原生属性是无效的
+   if ( typeof target !== &quot;object&quot; &amp;&amp; !jQuery.isFunction( target ) ) {
+      target = {};
+   }
+
+   // Extend jQuery itself if only one argument is passed
+   if ( i === length ) {
+      target = this;  //只有一个对象传入的时候，将this作为目标对象
+      i--;
+   }
+
+   for ( ; i &lt; length; i++ ) { //逐个遍历源对象
+
+      // Only deal with non-null/undefined values
+      if ( ( options = arguments[ i ] ) != null ) {
+
+         // Extend the base object
+         for ( name in options ) {
+            src = target[ name ];
+            copy = options[ name ];
+
+            // Prevent never-ending loop
+            //为了避免深度复制时死循环
+            if ( target === copy ) {
+               continue;
+            }
+
+            // Recurse if we&#39;re merging plain objects or arrays
+            if ( deep &amp;&amp; copy &amp;&amp; ( jQuery.isPlainObject( copy ) ||
+               ( copyIsArray = Array.isArray( copy ) ) ) ) {
+
+               if ( copyIsArray ) {
+                  copyIsArray = false;
+                  clone = src &amp;&amp; Array.isArray( src ) ? src : [];
+
+               } else {
+                  clone = src &amp;&amp; jQuery.isPlainObject( src ) ? src : {};
+               }
+
+               // Never move original objects, clone them
+               target[ name ] = jQuery.extend( deep, clone, copy ); //把复制值copy递归合并到原始值副本clone中，然后覆盖目标对象的同名属性
+
+            // Don&#39;t bring in undefined values
+            } else if ( copy !== undefined ) {
+               target[ name ] = copy;  //浅合并：直接覆盖同名属性
+            }
+         }
+      }
+   }
+
+   // Return the modified object
+   return target;
+};
+</code></pre></div>
+	分析以上源码可知，方法jQuery.extend()和 jQuery.fn.extend()执行的关键步骤如下：
+</p>
+<ol class=" list-paddingleft-2" style="list-style-type: decimal;">
+	<li>
+		<p>
+			修正参数中deep,target,源对象的起始下标
+		</p>
+	</li>
+	<li>
+		<p>
+			逐个遍历源对象：遍历源对象的属性；覆盖目标对象的同名属性，如果是深度合并，则先递归调用jQuery.extend<br/>
+		</p>
+	</li>
+</ol>

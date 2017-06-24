@@ -3,7 +3,7 @@ layout: post
 title: javascript的闭包和变量作用链域
 date: 2017-06-24
 categories: javascript
-tags: [闭包]
+tags: [jQuery]
 ---
 
 用了很久的js但一直没真正理解js的闭包，今天好好查了书籍和资料终于豁然开朗，总结一下。
