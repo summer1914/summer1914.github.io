@@ -131,7 +131,7 @@ $foo.trigger(&#39;custom&#39;);  //=&gt; &#39;custom event was called&#39;</code
 	构造jQuery对象的源码结构如下，行数与真实源码不一致，只是展示结构：
 </p>
 <p>
-	<img src="https://www.luojia.ren/wp-content/uploads/2017/05/46521493642709.jpeg" title="jQueryInit.jpeg"/>
+	<img src="http://blog.luojia.ren/upload/46521493642709.jpeg" title="jQueryInit.jpeg"/>
 </p>
 <p>
 	简要分析：
@@ -201,7 +201,7 @@ $foo.trigger(&#39;custom&#39;);  //=&gt; &#39;custom event was called&#39;</code
 			2~18为什么将代码包裹在一个自调用的匿名函数中，去掉自调用的匿名函数，直接定义成如下形式不是更容易理解？
 		</p>
 		<p>
-			<img src="https://www.luojia.ren/wp-content/uploads/2017/05/18671493642709.jpeg" title="jQueryInit2.jpeg"/>
+			<img src="http://blog.luojia.ren/upload/18671493642709.jpeg" title="jQueryInit2.jpeg"/>
 		</p>
 		<p>
 			这张图的代码功能和上一张jQuery的源码是没有差异的，代码少的时候看起来确实这样舒服一点，但是如果考虑到jQuery的源码上万，就要考虑这样写会增加构造jQuery模块和其他的jQuery模块的耦合性。红框所标的源码部分省略了很多其他的局部变量，而这些局部变量其实只在jQuery的构造模块使用，通过把这些局部变量包裹在一个自调用的匿名函数中，更符合高内聚低耦合的设计思想。
