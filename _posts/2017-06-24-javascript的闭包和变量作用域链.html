@@ -1,6 +1,9 @@
 ---
 layout: post
 title: javascript的闭包和变量作用链域
+date: 2017-06-24
+categories: javascript
+tags: [闭包]
 ---
 
 <h2>{{ page.title }}</h2>
@@ -16,7 +19,7 @@ title: javascript的闭包和变量作用链域
 <p>
 	下面的例子可以感受一下这个特性：<br/>
 </p>
-<pre class="brush:js;toolbar:false;">var girl = &#39;Summer&#39;;
+<code class="brush:js;toolbar:false;">var girl = &#39;Summer&#39;;
 function getGirl(){
     var girl = &#39;Lily&#39;;
     function f(){
@@ -26,11 +29,11 @@ function getGirl(){
     return f();
 }
 
-getGirl();  //return Lily</pre>
+getGirl();  //return Lily</code>
 <p>
 	上面的函数我们很好理解，getGirl()返回的是f()的执行结果，所以返回的是getGirl()的局部变量Lily。我们再看看下一个：
 </p>
-<pre class="brush:js;toolbar:false">var girl = &#39;Summer&#39;;
+<code class="brush:js;toolbar:false">var girl = &#39;Summer&#39;;
 function getGirl(){
     var girl = &#39;Lily&#39;;
     function f(){
@@ -40,7 +43,7 @@ function getGirl(){
     return f;
 }
 
-getGirl()();  //返回值是什么？</pre>
+getGirl()();  //返回值是什么？</code>
 <p>
 	这个例子我们把一对圆括号移到了getGirl()之后，getGirl()只返回一个函数对象，而不是直接返回结果。在定义函数getGirl()的作用域外面调用，会发生什么？
 </p>
@@ -53,8 +56,8 @@ getGirl()();  //返回值是什么？</pre>
 <p>
 	要想通这个问题我们必须要理解函数的作用域链，了解这个问题之前，我们先了解一下js的全局变量和局部变量。我们知道在js中变量分为全局变量和局部变量，全局变量可以看成是全局对象的一个属性。
 </p>
-<pre class="brush:js;toolbar:false">var master = &#39;Summer&#39;;
-console.log(this.master);   //Summer</pre>
+<code class="brush:js;toolbar:false">var master = &#39;Summer&#39;;
+console.log(this.master);   //Summer</code>
 <p>
 	全局变量是全局对象的属性，这是在ECMAScript规范中强制规定的。对于局部变量，虽然没有类似的强制规定，但我们可以想象，局部变量可以当作是一个和函数调用相关的对象的属性，也就是还是某个对象的属性，ECMAScript3规范中称该对象为“调用对象”，ECMAScript5规范称为“声明上下文对象”，但本质还是个对象。
 </p>
@@ -67,7 +70,7 @@ console.log(this.master);   //Summer</pre>
 <p>
 	可以再看一个计数器的例子：
 </p>
-<pre class="brush:js;toolbar:false">function counter(){
+<code class="brush:js;toolbar:false">function counter(){
     var n = 0;
     return {
         count: function(){return n++;},
@@ -80,7 +83,7 @@ a.count();   //1
 b.count();   //1
 a.reset();   //0,reset()和count()共享状态
 a.count();    //1
-b.count();    //2 ;a,b互不干扰，a的重置不影响b</pre>
+b.count();    //2 ;a,b互不干扰，a的重置不影响b</code>
 <p>
 	如上代码所示，counter()函数返回一个计数器对象，理解如下点：
 </p>

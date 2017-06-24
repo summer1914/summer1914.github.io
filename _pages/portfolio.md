@@ -8,7 +8,7 @@ header:
   overlay_image: blogAlbumhomepage-banner-1.jpg
   cta_url: "https://github.com/summer1914/summer1914.github.io/"
   caption: "Photo credit: [**luojia**](https://summer1914.github.io/)"
-excerpt: "Joe's Portfolio."
+excerpt: "Summer's Portfolio."
 intro: 
   - excerpt: 'Some projects slected from my works. You can find out more via my Github Repositry List.'
 feature_row:
