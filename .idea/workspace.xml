@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9c50a1d1-7353-4180-b718-a9dd41a68b8d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_posts/2017-06-09-五子棋游戏.html" afterPath="$PROJECT_DIR$/_posts/2017-06-09-五子棋游戏.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_posts/2017-08-30-秒杀计划.md" afterPath="$PROJECT_DIR$/_posts/2017-08-30-秒杀计划.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -47,17 +46,17 @@
       <file leaf-file-name="2017-06-08-五子棋AI下.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_posts/2017-06-08-五子棋AI下.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="24" column="8" lean-forward="false" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="8" />
+            <state relative-caret-position="75">
+              <caret line="5" column="12" lean-forward="false" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="12" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="2017-08-30-秒杀计划.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="2017-08-30-秒杀计划.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_posts/2017-08-30-秒杀计划.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="354">
+            <state relative-caret-position="1560">
               <caret line="104" column="0" lean-forward="true" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
               <folding />
             </state>
@@ -67,8 +66,8 @@
       <file leaf-file-name="2017-06-09-五子棋游戏.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_posts/2017-06-09-五子棋游戏.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="22" column="2980" lean-forward="true" selection-start-line="22" selection-start-column="2951" selection-end-line="22" selection-end-column="2980" />
+            <state relative-caret-position="30">
+              <caret line="2" column="12" lean-forward="true" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -117,11 +116,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="2017-06-07-五子棋AI上.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="2017-06-07-五子棋AI上.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_posts/2017-06-07-五子棋AI上.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
-              <caret line="44" column="5" lean-forward="false" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
+            <state relative-caret-position="133">
+              <caret line="9" column="5" lean-forward="true" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -159,6 +158,7 @@
       <find>updated</find>
       <find>post</find>
       <find>tim</find>
+      <find>../images</find>
       <find>images</find>
     </findStrings>
     <replaceStrings>
@@ -172,6 +172,7 @@
       <replace>&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</replace>
       <replace>}&lt;/code</replace>
       <replace>&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;</replace>
+      <replace>http://blog.luojia.ren/images</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -212,8 +213,8 @@
         <option value="$PROJECT_DIR$/_includes/comments.html" />
         <option value="$PROJECT_DIR$/_posts/2017-06-24-javascript的闭包和变量作用域链.md" />
         <option value="$PROJECT_DIR$/_posts/2017-07-03-超越感觉.md" />
-        <option value="$PROJECT_DIR$/_posts/2017-06-09-五子棋游戏.html" />
         <option value="$PROJECT_DIR$/_posts/2017-08-30-秒杀计划.md" />
+        <option value="$PROJECT_DIR$/_posts/2017-06-09-五子棋游戏.html" />
       </list>
     </option>
   </component>
@@ -405,12 +406,12 @@
       <workItem from="1504096235949" duration="579000" />
       <workItem from="1504142838990" duration="10000" />
       <workItem from="1504142876046" duration="17000" />
-      <workItem from="1506502578075" duration="1796000" />
+      <workItem from="1506502578075" duration="1956000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19798000" />
+    <option name="totallyTimeSpent" value="19958000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="832" extended-state="6" />
@@ -777,14 +778,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_posts/2017-06-07-五子棋AI上.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="44" column="5" lean-forward="false" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_pages/about.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -818,26 +811,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/_posts/2017-08-30-秒杀计划.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1560">
+          <caret line="104" column="0" lean-forward="true" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/_posts/2017-06-08-五子棋AI下.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="24" column="8" lean-forward="false" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="8" />
+        <state relative-caret-position="75">
+          <caret line="5" column="12" lean-forward="false" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/_posts/2017-06-09-五子棋游戏.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="2980" lean-forward="true" selection-start-line="22" selection-start-column="2951" selection-end-line="22" selection-end-column="2980" />
+        <state relative-caret-position="30">
+          <caret line="2" column="12" lean-forward="true" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_posts/2017-08-30-秒杀计划.md">
+    <entry file="file://$PROJECT_DIR$/_posts/2017-06-07-五子棋AI上.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="354">
-          <caret line="104" column="0" lean-forward="true" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+        <state relative-caret-position="133">
+          <caret line="9" column="5" lean-forward="true" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
           <folding />
         </state>
       </provider>
