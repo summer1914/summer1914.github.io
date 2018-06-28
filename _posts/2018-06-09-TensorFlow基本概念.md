@@ -16,8 +16,8 @@ tags: [TensorFlow]
 
 我们可以将任意一张 RGB彩色图片表示成一个三阶张量，三个维度分布是图片高度，宽度和色彩数据。如下，是图片效果和截取的图片的前5行320列的数据，每个放歌代表一个像素点，方格中的数据为颜色值。将这个示例进行扩展，我们可以用四阶张量表示一个包含多张图片的数据集，四个维度分别是：图片在数据集中的编号，图片的高度，宽度以及色彩数据。
 
-![张量示例1](../images/tensorflow/张量示例1.png)
-![张量示例2](../images/tensorflow/张量示例2.png)
+![张量示例1](http://blog.luojia.ren/images/tensorflow/张量示例1.png)
+![张量示例2](http://blog.luojia.ren/images/tensorflow/张量示例2.png)
 
 ```
 import numpy
